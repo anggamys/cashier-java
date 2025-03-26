@@ -16,17 +16,37 @@ public class Main {
             System.out.print("Choose an option: ");
             
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-
+            scanner.nextLine(); 
+            
             if (choice == 1) {
                 System.out.print("Enter username: ");
                 String username = scanner.nextLine();
+                
                 System.out.print("Enter password: ");
                 String password = scanner.nextLine();
-                System.out.print("Enter role (ADMIN/USER): ");
-                String role = scanner.nextLine().toUpperCase();
-
-                userService.registerUser(username, password, role);
+        
+                String role;
+                while (true) {
+                    System.out.print("Enter role (CASHIER/CUSTOMER/OWNER): ");
+                    role = scanner.nextLine().toLowerCase();
+                    if (role.equals("cashier") || role.equals("customer") || role.equals("owner")) {
+                        break;
+                    }
+                    System.out.println("❌ Invalid role! Please enter CASHIER, CUSTOMER, or OWNER.");
+                }
+        
+                System.out.print("Enter name: ");
+                String name = scanner.nextLine();
+                
+                System.out.print("Enter email: ");
+                String email = scanner.nextLine();
+                
+                System.out.print("Enter phone: ");
+                String phone = scanner.nextLine();
+                
+                System.out.print("Enter address: ");
+                String address = scanner.nextLine();
+                userService.registerUser(username, password, role, name, email, phone, address);
             } 
             else if (choice == 2) {
                 System.out.print("Enter username: ");
@@ -38,10 +58,12 @@ public class Main {
                 
                 if (user != null) {
                     System.out.println("\nWelcome, " + user.getUsername() + "!");
-                    if (userService.isAdmin(user)) {
-                        System.out.println("🔹 You have ADMIN privileges.");
+                    if (userService.isCashier(user)) {
+                        System.out.println("🔹 You are a CASHIER.");
+                    } else if (userService.isOwner(user)) {
+                        System.out.println("🔹 You are an OWNER.");
                     } else {
-                        System.out.println("🔹 You are a USER.");
+                        System.out.println("🔹 You are a CUSTOMER.");
                     }
                 }
             } 

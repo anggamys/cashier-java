@@ -12,6 +12,4 @@ Proyek ini dapat dijadikan dasar untuk pengembangan aplikasi kasir yang lebih ko
 
 ## 👨‍💻 Pengembang & Kontributor
 
-<a href="https://github.com/anggamys">
-  <img src="https://github.com/anggamys.png" width="50" height="50" style="border-radius: 50%;">
-</a>
+![Contributor](https://github.com/anggamys.png?size=50)
