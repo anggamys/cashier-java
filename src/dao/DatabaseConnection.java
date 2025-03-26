@@ -1,13 +1,16 @@
 package dao;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private static final String DATABASE_URL = "jdbc:mysql://localhost:3307/db_cashier";
-    private static final String DATABASE_USERNAME = "root";
-    private static final String DATABASE_PASSWORD = "C0del@b08";
+    private static final Dotenv dotenv = Dotenv.load();
+
+    private static final String DATABASE_URL = dotenv.get("DATABASE_URL");
+    private static final String DATABASE_USERNAME = dotenv.get("DATABASE_USERNAME");
+    private static final String DATABASE_PASSWORD = dotenv.get("DATABASE_PASSWORD");
 
     public static Connection getConnection() {
         try {

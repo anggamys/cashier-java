@@ -12,7 +12,7 @@ public class Main {
             System.out.println("\n==== User System ====");
             System.out.println("1. Register");
             System.out.println("2. Login");
-            System.out.println("3. Exit");
+            System.out.println("0. Exit");
             System.out.print("Choose an option: ");
             
             int choice = scanner.nextInt();
@@ -45,7 +45,7 @@ public class Main {
                     }
                 }
             } 
-            else if (choice == 3) {
+            else if (choice == 0) {
                 System.out.println("Exiting...");
                 break;
             } 
