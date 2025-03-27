@@ -9,7 +9,3 @@ Repositori ini dibuat untuk memenuhi tugas _Evaluasi Tengah Semester (ETS)_ mata
 - Antarmuka yang sederhana dan mudah digunakan.
 
 Proyek ini dapat dijadikan dasar untuk pengembangan aplikasi kasir yang lebih kompleks atau sebagai sarana pembelajaran pemrograman Java.
-
-## 👨‍💻 Pengembang & Kontributor
-
-![Contributor](https://github.com/anggamys.png?size=50)
