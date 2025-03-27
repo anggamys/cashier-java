@@ -1,14 +1,14 @@
 package userinterface;
 
 import model.User;
-import service.UserService;
+import service.AuthService;
 import java.io.IOException;
 import java.util.Scanner;
 
 public class Auth {
-    private UserService userService;
+    private AuthService userService;
 
-    public Auth(UserService userService) {
+    public Auth(AuthService userService) {
         this.userService = userService;
     }
 

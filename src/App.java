@@ -1,4 +1,4 @@
-import service.UserService;
+import service.AuthService;
 import userinterface.Auth;
 import userinterface.CashierMenu;
 import java.util.Scanner;
@@ -6,7 +6,7 @@ import model.User;
 
 public class App {
     public static void main(String[] args) {
-        UserService userService = new UserService();
+        AuthService userService = new AuthService();
         Auth auth = new Auth(userService);
         Scanner scanner = new Scanner(System.in);
 

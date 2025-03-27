@@ -3,7 +3,7 @@ package service;
 import dao.UserDAO;
 import model.User;
 
-public class UserService {
+public class AuthService {
     private final UserDAO userDAO = new UserDAO();
 
     public void registerUser(String username, String password, String role, String name, String email, String phone, String address) {
