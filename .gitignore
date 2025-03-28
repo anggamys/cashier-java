@@ -1,2 +1,5 @@
 # File configuration
 .env
+
+# File compiler
+*.class
