@@ -2,11 +2,10 @@ package userinterface;
 
 import model.User;
 import service.AuthService;
-import java.io.IOException;
 import java.util.Scanner;
 
 public class Auth {
-    private AuthService userService;
+    private final AuthService userService; // 🔹 Gunakan final
 
     public Auth(AuthService userService) {
         this.userService = userService;
@@ -20,20 +19,30 @@ public class Auth {
                 System.out.print("\033[H\033[2J");
                 System.out.flush();
             }
-        } catch (IOException | InterruptedException ex) {
-            System.out.println("❌ Failed to clear screen!");
+        } catch (Exception ex) { // 🔹 Tangkap semua error tanpa menghentikan program
+            System.out.println("⚠️ Unable to clear screen.");
         }
     }
 
     public void register(Scanner scanner) {
-        clearScreen(); // 🔹 Bersihkan layar sebelum menampilkan menu
+        clearScreen();
         System.out.println("\n===== REGISTER =====");
 
-        System.out.print("Enter username: ");
-        String username = scanner.nextLine().trim();
+        String username, password, email, phone;
+        
+        while (true) {
+            System.out.print("Enter username: ");
+            username = scanner.nextLine().trim();
+            if (!username.isEmpty()) break;
+            System.out.println("❌ Username cannot be empty!");
+        }
 
-        System.out.print("Enter password: ");
-        String password = scanner.nextLine().trim();
+        while (true) {
+            System.out.print("Enter password: ");
+            password = scanner.nextLine().trim();
+            if (!password.isEmpty()) break;
+            System.out.println("❌ Password cannot be empty!");
+        }
 
         String role;
         while (true) {
@@ -48,11 +57,19 @@ public class Auth {
         System.out.print("Enter name: ");
         String name = scanner.nextLine().trim();
 
-        System.out.print("Enter email: ");
-        String email = scanner.nextLine().trim();
+        while (true) {
+            System.out.print("Enter email: ");
+            email = scanner.nextLine().trim();
+            if (!email.isEmpty()) break;
+            System.out.println("❌ Email cannot be empty!");
+        }
 
-        System.out.print("Enter phone: ");
-        String phone = scanner.nextLine().trim();
+        while (true) {
+            System.out.print("Enter phone: ");
+            phone = scanner.nextLine().trim();
+            if (!phone.isEmpty()) break;
+            System.out.println("❌ Phone number cannot be empty!");
+        }
 
         System.out.print("Enter address: ");
         String address = scanner.nextLine().trim();
@@ -62,23 +79,23 @@ public class Auth {
     }
 
     public User login(Scanner scanner) {
-        clearScreen(); // 🔹 Bersihkan layar sebelum menampilkan menu login
+        clearScreen();
         System.out.println("\n===== LOGIN =====");
-
+    
         System.out.print("Enter username: ");
-        String username = scanner.nextLine().trim();
-
+        String username = scanner.next(); // Gunakan next() agar hanya membaca satu kata
+        scanner.nextLine(); // Tambahkan ini untuk mengonsumsi newline setelah next()
+    
         System.out.print("Enter password: ");
-        String password = scanner.nextLine().trim();
-
-        // Validasi input kosong
+        String password = scanner.nextLine().trim(); // Menggunakan nextLine() untuk password
+    
         if (username.isEmpty() || password.isEmpty()) {
             System.out.println("❌ Username and password cannot be empty!");
             return null;
         }
-
+    
         User user = userService.login(username, password);
-
+    
         if (user != null) {
             System.out.println("\n✅ Welcome, " + user.getUsername() + " (" + user.getRole().toUpperCase() + ")!");
             return user;

@@ -1,14 +1,16 @@
 package model;
 
+import java.time.LocalDateTime;
+
 public class Transaction {
     private int id;
     private String customerName;
     private int totalPrice;
-    private String date;
-
+    private LocalDateTime date; 
+    
     public Transaction() {}
 
-    public Transaction(int id, String customerName, int totalPrice, String date) {
+    public Transaction(int id, String customerName, int totalPrice, LocalDateTime date) {
         this.id = id;
         this.customerName = customerName;
         this.totalPrice = totalPrice;
@@ -31,19 +33,19 @@ public class Transaction {
         this.customerName = customerName;
     }
 
-    public int getTotalPrice() {  // 🔹 Konsisten dengan nama atribut
+    public int getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(int totalPrice) {  // 🔹 Konsisten dengan getter
+    public void setTotalPrice(int totalPrice) {
         this.totalPrice = totalPrice;
     }
 
-    public String getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
@@ -53,7 +55,7 @@ public class Transaction {
                 "id=" + id +
                 ", customerName='" + customerName + '\'' +
                 ", totalPrice=" + totalPrice +
-                ", date='" + date + '\'' +
+                ", date=" + date +
                 '}';
     }
 }

@@ -1,10 +1,10 @@
 package service;
 
-import dao.UserDAO;
+import dao.AuthDao;
 import model.User;
 
 public class AuthService {
-    private final UserDAO userDAO = new UserDAO();
+    private final AuthDao userDAO = new AuthDao();
 
     public void registerUser(String username, String password, String role, String name, String email, String phone, String address) {
             User user = new User();

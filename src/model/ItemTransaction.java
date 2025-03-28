@@ -45,15 +45,14 @@ public class ItemTransaction {
         return quantity;
     }
 
-    public void setQuantity(int quantity, int pricePerItem) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
-        this.amount = quantity * pricePerItem; // 🔥 Update otomatis
     }
-
+    
     public int getAmount() {
         return amount;
     }
-
+    
     public void setAmount(int amount) {
         this.amount = amount;
     }
