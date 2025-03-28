@@ -3,7 +3,8 @@ import utils.Ui;
 import services.AuthService;
 import services.ProductService;
 import services.TransactionService;
-import userinterfaces.Auth;
+import services.UserService;
+import userinterfaces.AuthUi;
 import userinterfaces.CashierMenu;
 import userinterfaces.Form;
 import userinterfaces.OwnerMenu;
@@ -12,11 +13,12 @@ import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) {
-        AuthService userService = new AuthService();
+        AuthService authService = new AuthService();
         TransactionService transactionService = new TransactionService();
         ProductService productService = new ProductService();
+        UserService userService = new UserService();
 
-        Auth auth = new Auth(userService);
+        AuthUi authUi = new AuthUi(authService);
         Scanner scanner = new Scanner(System.in);
         ProductUi productUi = new ProductUi(productService);
 
@@ -29,13 +31,13 @@ public class App {
             int choice = Form.integerUserForm(scanner, "Enter choice: ");
             
             switch (choice) {
-                case 1 -> auth.register(scanner);
+                case 1 -> authUi.register(scanner);
                 case 2 -> {
-                    User user = auth.login(scanner);
+                    User user = authUi.login(scanner);
                     if (user != null) {
                         switch (user.getRole().toLowerCase()) {
                             case "cashier" -> new CashierMenu(scanner, productUi, transactionService).show();
-                            case "owner" -> new OwnerMenu(scanner, productService).show();
+                            case "owner" -> new OwnerMenu(scanner, productService, userService).show();
                             default -> System.out.println("🛍️ Welcome to the Customer Menu!");
                         }
                     }

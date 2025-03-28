@@ -5,10 +5,10 @@ import utils.Ui;
 import services.AuthService;
 import java.util.Scanner;
 
-public class Auth {
+public class AuthUi {
     private final AuthService userService; 
 
-    public Auth(AuthService userService) {
+    public AuthUi(AuthService userService) {
         this.userService = userService;
     }
 
