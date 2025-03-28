@@ -1,18 +1,18 @@
 package dao;
 
-import java.sql.*;
+import model.Product;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.*;
-
 public class ProductDao {
-    public boolean addProduct(Product product) {
-        String sql = "INSERT INTO products (name, category, price, stock) VALUES (?, ?, ?, ?)";
-        
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
+    public void addProduct(Product product, Connection conn) {
+        String sql = "INSERT INTO products (name, category, price, stock) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, product.getName());
             stmt.setString(2, product.getCategory());
             stmt.setInt(3, product.getPrice());
@@ -20,86 +20,70 @@ public class ProductDao {
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
-                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        product.setId(generatedKeys.getInt(1));
-                    }
-                }
-                return true;
-            } else {
-                return false;
+                System.out.println("✅ Product added successfully: " + product.getName());
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+        } catch (Exception e) {
+            System.out.println("❌ Failed to add product: " + e.getMessage());
         }
     }
 
-    public Product[] getAllProducts() {
+    public Product[] getAllProducts(Connection conn) {
         String sql = "SELECT * FROM products";
         List<Product> productList = new ArrayList<>();
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+            
             while (rs.next()) {
-                Product product = new Product();
-                product.setId(rs.getInt("id"));
-                product.setName(rs.getString("name"));
-                product.setCategory(rs.getString("category"));
-                product.setPrice(rs.getInt("price"));
-                product.setStock(rs.getInt("stock"));
-
+                Product product = new Product(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("category"),
+                    rs.getInt("price"),
+                    rs.getInt("stock")
+                );
                 productList.add(product);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("❌ Failed to fetch products: " + e.getMessage());
         }
 
         return productList.toArray(new Product[0]); 
     }
 
-    public Product getProductById(int productId) {
+    public Product getProductById(int id, Connection conn) {
         String sql = "SELECT * FROM products WHERE id = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, productId);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    Product product = new Product();
-                    product.setId(rs.getInt("id"));
-                    product.setName(rs.getString("name"));
-                    product.setCategory(rs.getString("category"));
-                    product.setPrice(rs.getInt("price"));
-                    product.setStock(rs.getInt("stock"));
-
-                    return product;
-                } else {
-                    return null;
-                }
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery(); 
+            
+            if (rs.next()) { 
+                return new Product(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("category"),
+                    rs.getInt("price"),
+                    rs.getInt("stock")
+                );
+            } else {
+                System.out.println("⚠️ Product not found with ID: " + id);
+                return null;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("❌ Failed to fetch product: " + e.getMessage());
             return null;
         }
     }
 
-    public void updateStockProduct(int productId, int quantity) {
-        String sql = "UPDATE products SET stock = stock - ? WHERE id = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, quantity);
+    public void updateStockProduct(int productId, int quantities, Connection conn) {
+        String sql = "UPDATE products SET stock = ? WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, quantities);
             stmt.setInt(2, productId);
-
             stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            
+        } catch (Exception e) {
+            System.out.println("❌ Failed to update product stock: " + e.getMessage());
         }
     }
 }

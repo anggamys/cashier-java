@@ -1,32 +1,49 @@
 package service;
 
-import model.*;
-import dao.*;
+import model.Product;
+import dao.DatabaseConnection;
+import dao.ProductDao;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class ProductService {
-    public boolean addProduct(String name, String category, int price, int stock) {
-        ProductDao productDao = new ProductDao();
-        
-        Product product = new Product(0, name, category, price, stock); // ID diisi 0 karena akan digenerate oleh DB
-    
-        boolean success = productDao.addProduct(product);
-        
-        if (success) {
-            System.out.println("✅ Product added successfully: " + product.getName());
-        } else {
-            System.out.println("❌ Failed to add product.");
-        }
-        
-        return success;
+    private final ProductDao productDao;
+    private final Connection connection;
+
+    public ProductService() {
+        this.connection = DatabaseConnection.getConnection(); 
+        this.productDao = new ProductDao();
     }
 
-    public Product[] getAllProducts() {
-        ProductDao productDao = new ProductDao();
-        return productDao.getAllProducts();
+    public boolean addProduct(String name, String category, int price, int stock) {
+        try {
+            Product product = new Product(0, name, category, price, stock);
+            productDao.addProduct(product, connection);
+            
+            System.out.println("✅ Product added successfully: " + product.getName());        
+            return true;
+        } catch (Exception e) {
+            System.out.println("❌ Failed to add product: " + e.getMessage());
+            return false;
+        }
     }
+    
+    public Product[] getAllProducts() {
+        try (Connection conn = DatabaseConnection.getConnection()) { 
+            return productDao.getAllProducts(conn);
+        } catch (SQLException e) {
+            System.out.println("❌ Failed to fetch products: " + e.getMessage());
+            return new Product[0];
+        }
+    }
+
 
     public Product getProductById(int id) {
-        ProductDao productDao = new ProductDao();
-        return productDao.getProductById(id);
+        try {
+            return productDao.getProductById(id, connection);
+        } catch (Exception e) {
+            System.out.println("❌ Failed to fetch product: " + e.getMessage());
+            return null;
+        }
     }
 }

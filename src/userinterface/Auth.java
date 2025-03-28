@@ -5,8 +5,8 @@ import service.AuthService;
 import java.util.Scanner;
 
 public class Auth {
-    private final AuthService userService; // 🔹 Gunakan final
-
+    private final AuthService userService; 
+    
     public Auth(AuthService userService) {
         this.userService = userService;
     }
@@ -19,7 +19,7 @@ public class Auth {
                 System.out.print("\033[H\033[2J");
                 System.out.flush();
             }
-        } catch (Exception ex) { // 🔹 Tangkap semua error tanpa menghentikan program
+        } catch (Exception ex) {
             System.out.println("⚠️ Unable to clear screen.");
         }
     }
@@ -83,12 +83,12 @@ public class Auth {
         System.out.println("\n===== LOGIN =====");
     
         System.out.print("Enter username: ");
-        String username = scanner.next(); // Gunakan next() agar hanya membaca satu kata
-        scanner.nextLine(); // Tambahkan ini untuk mengonsumsi newline setelah next()
-    
+        String username = scanner.next(); 
+        scanner.nextLine();
+
         System.out.print("Enter password: ");
-        String password = scanner.nextLine().trim(); // Menggunakan nextLine() untuk password
-    
+        String password = scanner.nextLine().trim();
+        
         if (username.isEmpty() || password.isEmpty()) {
             System.out.println("❌ Username and password cannot be empty!");
             return null;

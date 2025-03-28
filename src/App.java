@@ -41,7 +41,7 @@ public class App {
                         CashierMenu cashierMenu = new CashierMenu(scanner, productUi, transactionService);
                         cashierMenu.show();
                     } else if (user.getRole().equalsIgnoreCase("owner")) {
-                        OwnerMenu ownerMenu = new OwnerMenu(scanner);
+                        OwnerMenu ownerMenu = new OwnerMenu(scanner, productService);
                         ownerMenu.show();
                     } else {
                         System.out.println("🛍️ Welcome to the Customer Menu!");

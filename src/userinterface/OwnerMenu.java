@@ -1,15 +1,17 @@
 package userinterface;
 
+import service.ProductService;
 import java.util.Scanner;
-import service.*;
 
 public class OwnerMenu {
-    private Scanner scanner;
-    private ProductService productService;
+    private final Scanner scanner;
+    private final ProductService productService;
+    private final ProductUi productUi;
 
-    public OwnerMenu(Scanner scanner) {
+    public OwnerMenu(Scanner scanner, ProductService productService) {
         this.scanner = scanner;
-        this.productService = new ProductService();
+        this.productService = productService;
+        this.productUi = new ProductUi(productService); 
     }
 
     public void show() {
@@ -17,36 +19,20 @@ public class OwnerMenu {
             clearScreen();
             System.out.println("\n==== Owner Menu ====");
             System.out.println("1. Add Product");
-            System.out.println("2. Show All Product");
+            System.out.println("2. Show All Products");
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
 
-            int choice;
-            try {
-                choice = scanner.nextInt();
-                scanner.nextLine(); 
-            } catch (Exception e) {
-                System.out.println("❌ Invalid input! Please enter a number.");
-                scanner.nextLine();
-                continue;
-            }
-
+            int choice = readIntegerInput();
+            
             switch (choice) {
-                case 1:
-                    addProduct();
-                    break;
-                case 2:
-                    ProductUi productUi = new ProductUi(productService);
-                    productUi.showAllProducts();
-
-                    System.out.print("\nPress Enter to continue...");
-                    scanner.nextLine();
-                break;
-                case 0:
+                case 1 -> addProduct();
+                case 2 -> showAllProducts();
+                case 0 -> {
                     System.out.println("🔚 Exiting Owner Menu...");
                     return;
-                default:
-                    System.out.println("❌ Invalid choice! Please enter 1 or 2.");
+                }
+                default -> System.out.println("❌ Invalid choice! Please enter 1, 2, or 0.");
             }
         }
     }
@@ -66,21 +52,20 @@ public class OwnerMenu {
 
         boolean success = productService.addProduct(productName, productCategory, productPrice, productStock);
 
-        if (success) {
-            System.out.println("✅ Product added successfully!");
-        } else {
-            System.out.println("❌ Failed to add product.");
-        }
+        System.out.println(success ? "✅ Product added successfully!" : "❌ Failed to add product.");
+        pressEnterToContinue();
+    }
 
-        System.out.print("\nPress Enter to continue...");
-        scanner.nextLine();
+    private void showAllProducts() {
+        productUi.showAllProducts();
+        pressEnterToContinue();
     }
 
     private int readIntegerInput() {
         while (true) {
             try {
                 int value = scanner.nextInt();
-                scanner.nextLine();
+                scanner.nextLine(); 
                 return value;
             } catch (Exception e) {
                 System.out.print("❌ Invalid input! Please enter a valid number: ");
@@ -89,8 +74,13 @@ public class OwnerMenu {
         }
     }
 
+    private void pressEnterToContinue() {
+        System.out.print("\nPress Enter to continue...");
+        scanner.nextLine();
+    }
+
     public static void clearScreen() {
-        System.out.print("\033[H\033[2J");  
+        System.out.print("\033[H\033[2J");
         System.out.flush();
     }
 }

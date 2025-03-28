@@ -14,7 +14,7 @@ public class Transaction {
         this.id = id;
         this.customerName = customerName;
         this.totalPrice = totalPrice;
-        this.date = date;
+        this.date = LocalDateTime.now();
     }
 
     public int getId() {
