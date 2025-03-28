@@ -7,6 +7,7 @@ import models.Product;
 import models.Transaction;
 import services.ProductService;
 import services.TransactionService;
+import utils.Ui;
 
 public class CashierMenu {
     private Scanner scanner;
@@ -24,30 +25,28 @@ public class CashierMenu {
 
     public void show() {
         while (true) {
-            clearScreen(); 
+            Ui.clearScreen();
             
             System.out.println("\n==== Cashier Menu ====");
             System.out.println("1. Process Transaction");
             System.out.println("0. Logout");
-            System.out.print("Choose an option: ");
-            
-            int choice = readIntegerInput(); 
-            if (choice == 1) {
-                processTransaction(); 
-            }
-            else if (choice == 0) {
-                System.out.println("🔴 Logging out...");
-                break;
-            } 
-            else {
-                System.out.println("❌ Invalid choice. Try again.");
+            int choice = Form.integerUserForm(scanner, "Choose an option: ");
+
+            switch (choice) {
+                case 1 -> processTransaction();
+                case 0 -> {
+                    System.out.println("Logging out...");
+                    return;
+                }
+                default -> System.out.println("❌ Invalid choice.");
+
             }
         }
     }
 
     private void processTransaction() {
-        clearScreen();
-
+        Ui.clearScreen();
+        
         productUi.showAllProducts();
 
         System.out.print("\nEnter customer name: ");
@@ -59,8 +58,8 @@ public class CashierMenu {
         }
 
         System.out.print("Enter number of items: ");
-        int numItems = readIntegerInput();
-
+        int numItems = Form.integerUserForm(scanner, "Enter number of items: ");
+        
         if (numItems <= 0) {
             System.out.println("❌ The number of items must be at least 1.");
             return;
@@ -71,8 +70,8 @@ public class CashierMenu {
 
         for (int i = 0; i < numItems; i++) {
             System.out.print("Enter product ID for item " + (i + 1) + ": ");
-            productIds[i] = readIntegerInput();
-
+            productIds[i] = Form.integerUserForm(scanner, "Enter product ID for item ");
+            
             if (productIds[i] <= 0) {
                 System.out.println("❌ Invalid product ID! Try again.");
                 i--; 
@@ -80,8 +79,8 @@ public class CashierMenu {
             }
 
             System.out.print("Enter quantity for item " + (i + 1) + ": ");
-            quantities[i] = readIntegerInput();
-
+            quantities[i] = Form.integerUserForm(scanner, "Enter quantity for item ");
+            
             if (quantities[i] <= 0) {
                 System.out.println("❌ Quantity must be greater than 0! Try again.");
                 i--; 
@@ -130,25 +129,6 @@ public class CashierMenu {
             System.out.println("❌ Transaction failed. Please try again.");
         }
 
-        System.out.print("\nPress Enter to continue...");
-        scanner.nextLine();
-    }
-
-    private int readIntegerInput() {
-        while (true) {
-            try {
-                int input = scanner.nextInt();
-                scanner.nextLine(); 
-                return input;
-            } catch (Exception e) {
-                System.out.println("❌ Invalid input! Please enter a number.");
-                scanner.nextLine(); 
-            }
-        }
-    }
-
-    public static void clearScreen() {
-        System.out.print("\033[H\033[2J");  
-        System.out.flush();
+        Ui.pressEnterToContinue();
     }
 }

@@ -21,7 +21,7 @@ public class AuthDao {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, user.getUsername());
-            stmt.setString(2, hashedPassword); // Simpan password yang sudah di-hash
+            stmt.setString(2, hashedPassword); 
             stmt.setString(3, user.getRole());
             stmt.setString(4, user.getName());
             stmt.setString(5, user.getEmail());

@@ -1,86 +1,55 @@
+import models.User;
+import utils.Ui;
 import services.AuthService;
 import services.ProductService;
 import services.TransactionService;
 import userinterfaces.Auth;
 import userinterfaces.CashierMenu;
+import userinterfaces.Form;
 import userinterfaces.OwnerMenu;
 import userinterfaces.ProductUi;
-
 import java.util.Scanner;
-
-import models.User;
 
 public class App {
     public static void main(String[] args) {
         AuthService userService = new AuthService();
-        TransactionService transactionService = new TransactionService(); 
+        TransactionService transactionService = new TransactionService();
         ProductService productService = new ProductService();
-        
+
         Auth auth = new Auth(userService);
         Scanner scanner = new Scanner(System.in);
         ProductUi productUi = new ProductUi(productService);
 
         while (true) {
-            clearScreen();
-
+            Ui.clearScreen();
             System.out.println("\n==== Cashier System ====");
             System.out.println("1. Register");
             System.out.println("2. Login");
             System.out.println("0. Exit");
-            System.out.print("Choose an option: ");
-
-            int choice = readIntegerInput(scanner); 
-
-            if (choice == 1) {
-                auth.register(scanner);
-            } 
-            else if (choice == 2) {
-                User user = auth.login(scanner);
-                if (user != null) { 
-                    if (user.getRole().equalsIgnoreCase("cashier")) {
-                        CashierMenu cashierMenu = new CashierMenu(scanner, productUi, transactionService);
-                        cashierMenu.show();
-                    } else if (user.getRole().equalsIgnoreCase("owner")) {
-                        OwnerMenu ownerMenu = new OwnerMenu(scanner, productService);
-                        ownerMenu.show();
-                    } else {
-                        System.out.println("🛍️ Welcome to the Customer Menu!");
+            int choice = Form.integerUserForm(scanner, "Enter choice: ");
+            
+            switch (choice) {
+                case 1 -> auth.register(scanner);
+                case 2 -> {
+                    User user = auth.login(scanner);
+                    if (user != null) {
+                        switch (user.getRole().toLowerCase()) {
+                            case "cashier" -> new CashierMenu(scanner, productUi, transactionService).show();
+                            case "owner" -> new OwnerMenu(scanner, productService).show();
+                            default -> System.out.println("🛍️ Welcome to the Customer Menu!");
+                        }
                     }
-                } 
-            } 
-            else if (choice == 0) {
-                System.out.println("Exiting...");
-                break;
-            } 
-            else {
-                System.out.println("❌ Invalid choice.");
+                }
+                case 0 -> {
+                    System.out.println("Exiting...");
+                    break;
+                }
+                default -> System.out.println("❌ Invalid choice.");
             }
+
+            if (choice == 0) break;
         }
 
-        scanner.close(); 
-    }
-
-    private static int readIntegerInput(Scanner scanner) {
-        while (true) {
-            try {
-                return scanner.nextInt();
-            } catch (Exception e) {
-                System.out.println("❌ Invalid input! Please enter a number.");
-                scanner.nextLine();
-            }
-        }
-    }
-
-    public static void clearScreen() {
-        try {
-            if (System.getProperty("os.name").contains("Windows")) {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            } else {
-                System.out.print("\033[H\033[2J");
-                System.out.flush();
-            }
-        } catch (Exception e) {
-            System.out.println("⚠️ Unable to clear screen.");
-        }
+        scanner.close();
     }
 }
