@@ -1,7 +1,7 @@
-package service;
+package services;
 
 import dao.AuthDao;
-import model.User;
+import models.User;
 
 public class AuthService {
     private final AuthDao userDAO = new AuthDao();

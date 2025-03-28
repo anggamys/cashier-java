@@ -1,8 +1,9 @@
-package service;
+package services;
 
-import model.Product;
 import dao.DatabaseConnection;
 import dao.ProductDao;
+import models.Product;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 

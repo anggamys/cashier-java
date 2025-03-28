@@ -1,12 +1,12 @@
-package userinterface;
+package userinterfaces;
 
 import java.util.Optional;
 import java.util.Scanner;
 
-import model.Product;
-import model.Transaction;
-import service.TransactionService;
-import service.ProductService;
+import models.Product;
+import models.Transaction;
+import services.ProductService;
+import services.TransactionService;
 
 public class CashierMenu {
     private Scanner scanner;

@@ -1,9 +1,10 @@
 package dao;
 
-import model.ItemTransaction;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
+import models.ItemTransaction;
 
 public class ItemTransactionDao {
     public void addItemTransaction(ItemTransaction itemTransaction, Connection conn) throws SQLException {

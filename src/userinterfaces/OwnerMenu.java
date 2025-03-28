@@ -1,7 +1,8 @@
-package userinterface;
+package userinterfaces;
 
-import service.ProductService;
 import java.util.Scanner;
+
+import services.ProductService;
 
 public class OwnerMenu {
     private final Scanner scanner;

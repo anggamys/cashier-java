@@ -1,8 +1,10 @@
-package userinterface;
+package userinterfaces;
 
-import model.User;
-import service.AuthService;
+import services.AuthService;
+
 import java.util.Scanner;
+
+import models.User;
 
 public class Auth {
     private final AuthService userService; 

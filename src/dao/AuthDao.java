@@ -1,7 +1,9 @@
 package dao;
 
-import model.User;
 import org.mindrot.jbcrypt.BCrypt;
+
+import models.User;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

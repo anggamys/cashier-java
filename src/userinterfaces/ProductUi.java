@@ -1,7 +1,7 @@
-package userinterface;
+package userinterfaces;
 
-import model.Product;
-import service.ProductService;
+import models.Product;
+import services.ProductService;
 
 public class ProductUi {
     private final ProductService productService;

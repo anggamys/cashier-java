@@ -1,14 +1,14 @@
-import model.User;
-import service.AuthService;
-import service.TransactionService;
-import service.ProductService;
-
-import userinterface.Auth;
-import userinterface.CashierMenu;
-import userinterface.OwnerMenu;
-import userinterface.ProductUi;
+import services.AuthService;
+import services.ProductService;
+import services.TransactionService;
+import userinterfaces.Auth;
+import userinterfaces.CashierMenu;
+import userinterfaces.OwnerMenu;
+import userinterfaces.ProductUi;
 
 import java.util.Scanner;
+
+import models.User;
 
 public class App {
     public static void main(String[] args) {
@@ -23,7 +23,7 @@ public class App {
         while (true) {
             clearScreen();
 
-            System.out.println("\n==== User System ====");
+            System.out.println("\n==== Cashier System ====");
             System.out.println("1. Register");
             System.out.println("2. Login");
             System.out.println("0. Exit");
@@ -57,7 +57,7 @@ public class App {
             }
         }
 
-        scanner.close(); // 🔹 Pastikan scanner hanya ditutup setelah loop selesai
+        scanner.close(); 
     }
 
     private static int readIntegerInput(Scanner scanner) {
@@ -66,7 +66,7 @@ public class App {
                 return scanner.nextInt();
             } catch (Exception e) {
                 System.out.println("❌ Invalid input! Please enter a number.");
-                scanner.nextLine(); // Clear buffer
+                scanner.nextLine();
             }
         }
     }
