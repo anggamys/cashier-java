@@ -3,31 +3,42 @@ package dao;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class TransactionManager {
+public class TransactionManager implements AutoCloseable {
     private final Connection conn;
+    private boolean committed = false;
 
-    public TransactionManager(Connection conn) {
+    public TransactionManager(Connection conn) throws SQLException {
+        if (conn == null) {
+            throw new IllegalArgumentException("Connection cannot be null");
+        }
         this.conn = conn;
-    }
-
-    public void beginTransaction() throws SQLException {
-        conn.setAutoCommit(false);
+        this.conn.setAutoCommit(false);
     }
 
     public void commit() throws SQLException {
-        conn.commit();
+        if (!committed) {
+            conn.commit();
+            committed = true;
+        }
     }
 
     public void rollback() throws SQLException {
-        conn.rollback();
+        if (!committed) {
+            conn.rollback();
+        }
     }
 
     public Connection getConnection() {
         return conn;
     }
 
+    @Override
     public void close() throws SQLException {
-        if (conn != null) {
+        try {
+            if (!committed) {
+                rollback(); 
+            }
+        } finally {
             conn.setAutoCommit(true);
             conn.close();
         }

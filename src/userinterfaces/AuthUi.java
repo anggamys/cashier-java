@@ -3,6 +3,7 @@ package userinterfaces;
 import models.User;
 import utils.Ui;
 import services.AuthService;
+
 import java.util.Scanner;
 
 public class AuthUi {
@@ -35,19 +36,17 @@ public class AuthUi {
     public User login(Scanner scanner) {
         Ui.clearScreen();
         System.out.println("\n===== LOGIN =====");
-
-        String username, password;
-
-        username = Form.stringUserForm(scanner, "Enter username: ");
-        password = Form.stringUserForm(scanner, "Enter password: ");
-
+    
+        String username = Form.stringUserForm(scanner, "Enter username: ");
+        String password = Form.stringUserForm(scanner, "Enter password: ");
+    
         User user = userService.login(username, password);
-
+    
         if (user != null) {
             System.out.println("\n✅ Welcome, " + user.getUsername() + " (" + user.getRole().toUpperCase() + ")!");
             return user;
         }
-
+    
         System.out.println("❌ Invalid username or password!");
         Ui.pressEnterToContinue();
         return null;

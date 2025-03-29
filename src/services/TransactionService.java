@@ -9,9 +9,7 @@ import models.ItemTransaction;
 import models.Product;
 import models.Transaction;
 
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Optional;
 
 public class TransactionService {
     private final TransactionDao transactionDao;
@@ -24,84 +22,64 @@ public class TransactionService {
         this.productDao = new ProductDao();
     }
 
-    public Optional<Integer> addTransaction(String customerName, int[] productIds, int[] quantities) {
-        Connection conn = DatabaseConnection.getConnection();
-        TransactionManager transactionManager = new TransactionManager(conn);
-
-        try {
-            transactionManager.beginTransaction();
-
+    public int addTransaction(String customerName, int[] productIds, int[] quantities) {
+        try (TransactionManager tx = new TransactionManager(DatabaseConnection.getConnection())) {
             Transaction transaction = new Transaction();
             transaction.setCustomerName(customerName);
             transaction.setTotalPrice(0);
 
-            int transactionId = transactionDao.addTransaction(transaction, conn);
+            int transactionId = transactionDao.addTransaction(transaction, tx.getConnection());
             if (transactionId == -1) {
                 System.out.println("❌ Failed to create transaction!");
-                transactionManager.rollback();
-                return Optional.empty();
+                return -1;
             }
 
-            int totalPrice = 0;
-            for (int i = 0; i < productIds.length; i++) {
-                Product product = productDao.getProductById(productIds[i], conn);
-                if (product == null) {
-                    System.out.println("❌ Product ID " + productIds[i] + " not found!");
-                    transactionManager.rollback();
-                    return Optional.empty();
-                }
-
-                if (product.getStock() < quantities[i]) {
-                    System.out.println("❌ Insufficient stock for product ID " + productIds[i]);
-                    transactionManager.rollback();
-                    return Optional.empty();
-                }
-
-                int itemPrice = product.getPrice() * quantities[i];
-                totalPrice += itemPrice;
-
-                ItemTransaction itemTransaction = new ItemTransaction();
-                itemTransaction.setTransactionId(transactionId);
-                itemTransaction.setProductId(productIds[i]);
-                itemTransaction.setQuantity(quantities[i]);
-                itemTransaction.setAmount(itemPrice);
-
-                itemTransactionDao.addItemTransaction(itemTransaction, conn);
-                productDao.updateStockProduct(productIds[i], quantities[i], conn);
-            }
-
-            transactionDao.updateTotalPrice(transactionId, totalPrice, conn);
-            transactionManager.commit();
+            int totalPrice = processItems(transactionId, productIds, quantities, tx);
+            if (totalPrice == -1) return -1; 
+            
+            transactionDao.updateTotalPrice(transactionId, totalPrice, tx.getConnection());
+            tx.commit();
 
             System.out.println("✅ Transaction added successfully! ID: " + transactionId);
-            return Optional.of(transactionId);
-
+            return transactionId;
         } catch (SQLException e) {
-            try {
-                transactionManager.rollback();
-            } catch (SQLException rollbackEx) {
-                rollbackEx.printStackTrace();
-            }
-            e.printStackTrace();
-        } finally {
-            try {
-                transactionManager.close();
-            } catch (SQLException closeEx) {
-                closeEx.printStackTrace();
-            }
+            System.out.println("❌ Failed to create transaction: " + e.getMessage());
+            return -1;
         }
-        
-        System.out.println("❌ Failed to create transaction!");
-        return Optional.empty();
     }
 
-    public Optional<Transaction> getTransactionById(int id) {
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            return Optional.ofNullable(transactionDao.getTransactionById(id, conn));
+    private int processItems(int transactionId, int[] productIds, int[] quantities, TransactionManager tx) throws SQLException {
+        int totalPrice = 0;
+
+        for (int i = 0; i < productIds.length; i++) {
+            Product product = productDao.getProductById(productIds[i], tx.getConnection());
+            if (product == null) {
+                System.out.println("❌ Product ID " + productIds[i] + " not found!");
+                return -1;
+            }
+
+            if (product.getStock() < quantities[i]) {
+                System.out.println("❌ Insufficient stock for product ID " + productIds[i]);
+                return -1;
+            }
+
+            int itemPrice = product.getPrice() * quantities[i];
+            totalPrice += itemPrice;
+
+            ItemTransaction itemTransaction = new ItemTransaction(0, transactionId, productIds[i], quantities[i], itemPrice);
+            itemTransactionDao.addItemTransaction(itemTransaction, tx.getConnection());
+            productDao.updateStockProduct(productIds[i], quantities[i], tx.getConnection());
+        }
+
+        return totalPrice;
+    }
+
+    public Transaction getTransactionById(int id) {
+        try (TransactionManager tx = new TransactionManager(DatabaseConnection.getConnection())) {
+            return transactionDao.getTransactionById(id, tx.getConnection());
         } catch (SQLException e) {
             System.out.println("❌ Failed to fetch transaction: " + e.getMessage());
-            e.printStackTrace();
-            return Optional.empty();
+            return null;
         }
     }
 }

@@ -9,17 +9,20 @@ import userinterfaces.CashierMenu;
 import userinterfaces.Form;
 import userinterfaces.OwnerMenu;
 import userinterfaces.ProductUi;
+
 import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) {
+        // Inisialisasi services
         AuthService authService = new AuthService();
         TransactionService transactionService = new TransactionService();
         ProductService productService = new ProductService();
         UserService userService = new UserService();
 
-        AuthUi authUi = new AuthUi(authService);
+        // Inisialisasi scanner & UI
         Scanner scanner = new Scanner(System.in);
+        AuthUi authUi = new AuthUi(authService);
         ProductUi productUi = new ProductUi(productService);
 
         while (true) {
@@ -28,8 +31,9 @@ public class App {
             System.out.println("1. Register");
             System.out.println("2. Login");
             System.out.println("0. Exit");
+
             int choice = Form.integerUserForm(scanner, "Enter choice: ");
-            
+
             switch (choice) {
                 case 1 -> authUi.register(scanner);
                 case 2 -> {
@@ -44,14 +48,11 @@ public class App {
                 }
                 case 0 -> {
                     System.out.println("Exiting...");
-                    break;
+                    scanner.close();
+                    return;
                 }
-                default -> System.out.println("❌ Invalid choice.");
+                default -> System.out.println("❌ Invalid choice. Please try again.");
             }
-
-            if (choice == 0) break;
         }
-
-        scanner.close();
     }
 }
