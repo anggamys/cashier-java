@@ -1,13 +1,13 @@
 package services;
 
-import dao.TransactionDao;
-import dao.DatabaseConnection;
-import dao.ItemTransactionDao;
-import dao.ProductDao;
-import dao.TransactionManager;
 import models.ItemTransaction;
 import models.Product;
 import models.Transaction;
+import repository.DatabaseConnection;
+import repository.ItemTransactionDao;
+import repository.ProductDao;
+import repository.TransactionDao;
+import repository.TransactionManager;
 
 import java.sql.SQLException;
 

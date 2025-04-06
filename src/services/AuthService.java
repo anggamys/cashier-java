@@ -1,34 +1,59 @@
 package services;
 
-import dao.AuthDao;
-import models.User;
+import models.*;
+import repository.*;
+import utils.*;
 
 public class AuthService {
-    private final AuthDao authDao = new AuthDao();
 
-    public boolean registerUser(String username, String password, String role, String name, String email, String phone, String address) {
-        if (authDao.isUsernameTaken(username)) {
-            System.out.println("❌ Username is already taken!");
-            return false;
+    private OwnerRepo ownerRepo;
+
+    public AuthService() {
+        this.ownerRepo = new OwnerRepo();
+    }
+
+    public Object authenticate(String username, String password) {
+
+        Owner owner = ownerRepo.getOwnerByUsername(username);
+        if (owner != null) {
+            String hashedPassword = owner.getPassword();
+
+            if (FormatUtil.checkPassword(password, hashedPassword)){                
+                return owner;
+            } else {
+                System.out.println("❌ Invalid password");
+                return null;
+            }
+            
         }
 
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setRole(role);
-        user.setName(name);
-        user.setEmail(email);
-        user.setPhone(phone);
-        user.setAddress(address);
+        Cashier cashier = new CashierRepo().getCashierByUsername(username);
+        if (cashier != null) {
+            String hashedPassword = cashier.getPassword();
 
-        return authDao.registerUser(user);
-    }
+            if (FormatUtil.checkPassword(password, hashedPassword)){
+                return cashier;
+            } else {
+                System.out.println("❌ Invalid password");
+                return null;
+            }
+        }
 
-    public User login(String username, String password) {
-        return authDao.login(username, password);
-    }
+        Pelanggan pelanggan = new PelangganRepo().getPelangganByUsername(username);
+        if (pelanggan != null) {
+            String hashedPassword = pelanggan.getPassword();
 
-    public boolean hasRole(User user, String role) {
-        return user != null && role.equalsIgnoreCase(user.getRole());
+            if (FormatUtil.checkPassword(password, hashedPassword)){
+                return pelanggan;
+            } else {
+                System.out.println("❌ Invalid password");
+                return null;
+            }
+        }
+
+        System.out.println("❌ User not found");
+        return null;
+ 
     }
+    
 }

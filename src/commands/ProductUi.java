@@ -1,4 +1,4 @@
-package userinterfaces;
+package commands;
 
 import models.Product;
 import services.ProductService;
