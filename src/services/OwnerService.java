@@ -30,7 +30,7 @@ public class OwnerService {
             }
 
         } catch (Exception e) {
-            System.out.println("Error adding owner: " + e.getMessage());
+            FormatUtil.logError("OwnerService", "addOwner", e);
             return null;
         }
     }
@@ -46,7 +46,7 @@ public class OwnerService {
                 return null;
             }
         } catch (Exception e) {
-            System.out.println("Error retrieving owner: " + e.getMessage());
+            FormatUtil.logError("OwnerService", "getOwnerByUsername", e);
             return null;
         }
     }

@@ -1,18 +1,21 @@
 package repository;
 
 import java.sql.*;
+import java.util.*;
+
 import models.*;
+import utils.*;
 
 public class PelangganRepo {
 
-    private static final String ADD_PELANGGAN = "INSERT INTO pelanggan (id, name, email, phone, address, username, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    private static final String GET_PELANGGAN_BY_USERNAME = "SELECT * FROM pelanggan WHERE username = ?";
-    private static final String GET_PELANGGAN_BY_ID = "SELECT * FROM pelanggan WHERE id = ?";
-    private static final String GET_ALL = "SELECT * FROM pelanggan";
+    private static final String INSERT_PELANGGAN_SQL = "INSERT INTO pelanggan (id, name, email, phone, address, username, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String SELECT_BY_USERNAME_SQL = "SELECT * FROM pelanggan WHERE username = ?";
+    private static final String SELECT_BY_ID_SQL = "SELECT * FROM pelanggan WHERE id = ?";
+    private static final String SELECT_ALL_SQL = "SELECT * FROM pelanggan";
 
-    public Pelanggan addPelanggan(Pelanggan newPelanggan){
+    public Pelanggan addPelanggan(Pelanggan newPelanggan) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(ADD_PELANGGAN)) {
+             PreparedStatement stmt = conn.prepareStatement(INSERT_PELANGGAN_SQL)) {
 
             stmt.setString(1, newPelanggan.getId());
             stmt.setString(2, newPelanggan.getName());
@@ -23,97 +26,81 @@ public class PelangganRepo {
             stmt.setString(7, newPelanggan.getPassword());
 
             int rowsInserted = stmt.executeUpdate();
-            
             if (rowsInserted > 0) {
-                System.out.println("✅ Pelanggan added successfully!");
                 return newPelanggan;
-            } else {
-                System.out.println("❌ Failed to add pelanggan.");
-                return null;
+            }
 
-            } 
+            System.err.println("❌ Failed to add pelanggan.");
         } catch (SQLException e) {
-            System.out.println("❌ Error adding pelanggan: " + e.getMessage());
-            return null;
+            FormatUtil.logError("PelangganRepo", "addPelanggan", e);
         }
+        return null;
     }
 
     public Pelanggan getPelangganByUsername(String username) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(GET_PELANGGAN_BY_USERNAME)) {
+             PreparedStatement stmt = conn.prepareStatement(SELECT_BY_USERNAME_SQL)) {
 
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                String id = rs.getString("id");
-                String name = rs.getString("name");
-                String email = rs.getString("email");
-                int phoneNumber = rs.getInt("phone");
-                String address = rs.getString("address");
-                String password = rs.getString("password");
-
-                return new Pelanggan(id, name, email, phoneNumber, address, username, password);
-            } else {
-                System.out.println("❌ Pelanggan not found.");
-                return null;
+                return mapResultSetToPelanggan(rs);
             }
+
+            System.err.println("❌ Pelanggan not found with username: " + username);
         } catch (SQLException e) {
-            System.out.println("❌ Error retrieving pelanggan: " + e.getMessage());
-            return null;
+            FormatUtil.logError("PelangganRepo", "getPelangganByUsername", e);
         }
+        return null;
     }
 
     public Pelanggan getPelangganById(String id) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(GET_PELANGGAN_BY_ID)) {
+             PreparedStatement stmt = conn.prepareStatement(SELECT_BY_ID_SQL)) {
 
             stmt.setString(1, id);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                String name = rs.getString("name");
-                String email = rs.getString("email");
-                int phoneNumber = rs.getInt("phone");
-                String address = rs.getString("address");
-                String username = rs.getString("username");
-                String password = rs.getString("password");
-
-                return new Pelanggan(id, name, email, phoneNumber, address, username, password);
-            } else {
-                System.out.println("❌ Pelanggan not found.");
-                return null;
+                return mapResultSetToPelanggan(rs);
             }
+
+            System.err.println("❌ Pelanggan not found with ID: " + id);
         } catch (SQLException e) {
-            System.out.println("❌ Error retrieving pelanggan: " + e.getMessage());
+            FormatUtil.logError("PelangganRepo", "getPelangganById", e);
+        }
+        return null;
+    }
+
+    public Pelanggan[] getAllPelanggan() {
+        List<Pelanggan> pelangganList = new ArrayList<>();
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(SELECT_ALL_SQL);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                pelangganList.add(mapResultSetToPelanggan(rs));
+            }
+
+            return pelangganList.toArray(new Pelanggan[0]);
+        } catch (SQLException e) {
+            FormatUtil.logError("PelangganRepo", "getAllPelanggan", e);
             return null;
         }
     }
 
-    public Pelanggan[] getAllPelanggan() {
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(GET_ALL);
-             ResultSet rs = stmt.executeQuery()) {
-
-            Pelanggan[] pelangganList = new Pelanggan[100]; // Assuming a maximum of 100 customers
-            int index = 0;
-
-            while (rs.next()) {
-                String id = rs.getString("id");
-                String name = rs.getString("name");
-                String email = rs.getString("email");
-                int phoneNumber = rs.getInt("phone");
-                String address = rs.getString("address");
-                String username = rs.getString("username");
-                String password = rs.getString("password");
-
-                pelangganList[index++] = new Pelanggan(id, name, email, phoneNumber, address, username, password);
-            }
-
-            return pelangganList;
-        } catch (SQLException e) {
-            System.out.println("❌ Error retrieving all pelanggan: " + e.getMessage());
-            return null;
-        }
+    // Helper
+    private Pelanggan mapResultSetToPelanggan(ResultSet rs) throws SQLException {
+        return new Pelanggan(
+            rs.getString("id"),
+            rs.getString("name"),
+            rs.getString("email"),
+            rs.getInt("phone"),
+            rs.getString("address"),
+            rs.getString("username"),
+            rs.getString("password")
+        );
     }
 }

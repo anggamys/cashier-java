@@ -1,19 +1,21 @@
 package repository;
 
 import java.sql.*;
+import java.util.*;
 
 import models.*;
+import utils.*;
 
 public class OwnerRepo {
 
-    private static final String ADD_OWNER = "INSERT INTO owners (id, name, email, phone, address, username, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    private static final String GET_OWNER_BY_USERNAME = "SELECT * FROM owners WHERE username = ?";
-    private static final String GET_OWNER_BY_ID = "SELECT * FROM owners WHERE id = ?";
-    private static final String GET_ALL = "SELECT * FROM owners";
+    private static final String INSERT_OWNER_SQL = "INSERT INTO owners (id, name, email, phone_number, address, username, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String SELECT_BY_USERNAME_SQL = "SELECT * FROM owners WHERE username = ?";
+    private static final String SELECT_BY_ID_SQL = "SELECT * FROM owners WHERE id = ?";
+    private static final String SELECT_ALL_SQL = "SELECT * FROM owners";
 
-    public Owner addOwner(Owner newOwner){
+    public Owner addOwner(Owner newOwner) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(ADD_OWNER)) {
+             PreparedStatement stmt = conn.prepareStatement(INSERT_OWNER_SQL)) {
 
             stmt.setString(1, newOwner.getId());
             stmt.setString(2, newOwner.getName());
@@ -24,98 +26,81 @@ public class OwnerRepo {
             stmt.setString(7, newOwner.getPassword());
 
             int rowsInserted = stmt.executeUpdate();
-            
             if (rowsInserted > 0) {
-                System.out.println("✅ Owner added successfully!");
                 return newOwner;
-            } else {
-                System.out.println("❌ Failed to add owner.");
-                return null;
+            }
 
-            } 
+            System.err.println("❌ Failed to add owner.");
         } catch (SQLException e) {
-            System.out.println("❌ Error adding owner: " + e.getMessage());
-            return null;
+            FormatUtil.logError("OwnerRepo", "addOwner", e);
         }
-        
+        return null;
     }
 
     public Owner getOwnerByUsername(String username) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(GET_OWNER_BY_USERNAME)) {
+             PreparedStatement stmt = conn.prepareStatement(SELECT_BY_USERNAME_SQL)) {
 
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                String id = rs.getString("id");
-                String name = rs.getString("name");
-                String email = rs.getString("email");
-                int phoneNumber = rs.getInt("phone");
-                String address = rs.getString("address");
-                String password = rs.getString("password");
-
-                return new Owner(id, name, email, phoneNumber, address, username, password);
-            } else {
-                System.out.println("❌ Owner not found.");
-                return null;
+                return mapResultSetToOwner(rs);
             }
+
+            System.err.println("❌ Owner not found with username: " + username);
         } catch (SQLException e) {
-            System.out.println("❌ Error retrieving owner: " + e.getMessage());
-            return null;
+            FormatUtil.logError("OwnerRepo", "getOwnerByUsername", e);
         }
+        return null;
     }
-    
+
     public Owner getOwnerById(String id) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(GET_OWNER_BY_ID)) {
+             PreparedStatement stmt = conn.prepareStatement(SELECT_BY_ID_SQL)) {
 
             stmt.setString(1, id);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                String name = rs.getString("name");
-                String email = rs.getString("email");
-                int phoneNumber = rs.getInt("phone");
-                String address = rs.getString("address");
-                String username = rs.getString("username");
-                String password = rs.getString("password");
-
-                return new Owner(id, name, email, phoneNumber, address, username, password);
-            } else {
-                System.out.println("❌ Owner not found.");
-                return null;
+                return mapResultSetToOwner(rs);
             }
+
+            System.err.println("❌ Owner not found with ID: " + id);
         } catch (SQLException e) {
-            System.out.println("❌ Error retrieving owner: " + e.getMessage());
+            FormatUtil.logError("OwnerRepo", "getOwnerById", e);
+        }
+        return null;
+    }
+
+    public Owner[] getAllOwners() {
+        List<Owner> owners = new ArrayList<>();
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(SELECT_ALL_SQL);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                owners.add(mapResultSetToOwner(rs));
+            }
+
+            return owners.toArray(new Owner[0]);
+        } catch (SQLException e) {
+            FormatUtil.logError("OwnerRepo", "getAllOwners", e);
             return null;
         }
     }
 
-    public Owner[] getAllOwners() {
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(GET_ALL);
-             ResultSet rs = stmt.executeQuery()) {
-
-            Owner[] owners = new Owner[100]; // Assuming a maximum of 100 owners for simplicity
-            int index = 0;
-
-            while (rs.next()) {
-                String id = rs.getString("id");
-                String name = rs.getString("name");
-                String email = rs.getString("email");
-                int phoneNumber = rs.getInt("phone");
-                String address = rs.getString("address");
-                String username = rs.getString("username");
-                String password = rs.getString("password");
-
-                owners[index++] = new Owner(id, name, email, phoneNumber, address, username, password);
-            }
-
-            return owners;
-        } catch (SQLException e) {
-            System.out.println("❌ Error retrieving owners: " + e.getMessage());
-            return null;
-        }
+    // Helper method
+    private Owner mapResultSetToOwner(ResultSet rs) throws SQLException {
+        return new Owner(
+            rs.getString("id"),
+            rs.getString("name"),
+            rs.getString("email"),
+            rs.getInt("phone_number"),
+            rs.getString("address"),
+            rs.getString("username"),
+            rs.getString("password")
+        );
     }
 }

@@ -22,7 +22,6 @@ public class PelangganService {
             Pelanggan addedPelanggan = pelangganRepo.addPelanggan(newPelanggan);
 
             if (addedPelanggan != null) {
-                System.out.println("Pelanggan added successfully: " + addedPelanggan);
                 return addedPelanggan;
             } else {
                 System.out.println("Failed to add pelanggan.");
@@ -30,7 +29,7 @@ public class PelangganService {
             }
 
         } catch (Exception e) {
-            System.out.println("Error adding pelanggan: " + e.getMessage());
+            FormatUtil.logError("PelangganService", "addPelanggan", e);
             return null;
         }
     }
@@ -46,7 +45,7 @@ public class PelangganService {
                 return null;
             }
         } catch (Exception e) {
-            System.out.println("Error retrieving pelanggan: " + e.getMessage());
+            FormatUtil.logError("PelangganService", "getPelangganByUsername", e);
             return null;
         }
     }

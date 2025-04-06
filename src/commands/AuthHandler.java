@@ -8,10 +8,15 @@ public class AuthHandler {
     private final AuthService authService;
     private final SessionUtil sessionUtil;
     private final CashierHandler cashierHandler;
+    private final OwnerHandler ownerHandler;
+    private final PelangganHandler pelangganHandler;
 
     public AuthHandler() {
         this.authService = new AuthService();
         this.cashierHandler = new CashierHandler();
+        this.ownerHandler = new OwnerHandler();
+        this.pelangganHandler = new PelangganHandler();
+
         this.sessionUtil = SessionUtil.getInstance();
     }
 
@@ -34,7 +39,9 @@ public class AuthHandler {
 
         int pilihan = FormHandler.integerForm("Pilihan Anda: ");
         switch (pilihan) {
+            case 1 -> ownerHandler.addOwner();
             case 2 -> cashierHandler.addCashier();
+            case 3 -> pelangganHandler.addPelanggan();
             case 0 -> System.out.println("Kembali ke menu utama...");
             default -> {
                 System.out.println("❌ Pilihan tidak valid. Coba lagi.");

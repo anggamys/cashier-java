@@ -1,9 +1,7 @@
 package utils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
+import java.text.*;
+import java.util.*;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -21,12 +19,25 @@ public class FormatUtil {
         return BCrypt.checkpw(password, hashed);
     }
 
+    public static String formatCurrency(int amount) {
+        return String.format("Rp %,d", amount);
+    }
+
+    public static int parseStrToInt(String str) {
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            logError("FormatUtil", "parseStrToInt", e);
+            return -1;
+        }
+    }
+
     public static Date parseStrToDate(String dateString) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             return dateFormat.parse(dateString);
         } catch (ParseException e) {
-            System.err.println("Error parsing date: " + e.getMessage());
+            logError("FormatUtil", "parseStrToDate", e);
             return null;
         }
     }
@@ -36,8 +47,13 @@ public class FormatUtil {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             return dateFormat.format(date);
         } catch (Exception e) {
-            System.err.println("Error formatting date: " + e.getMessage());
+            logError("FormatUtil", "parseDateToStr", e);
             return null;
         }
+    }
+
+    public static void logError(String className, String methodName, Exception e) {
+        System.out.println("[" + className + ":" + methodName + "] ❌ " + e.getClass().getSimpleName() + " - " + e.getMessage());
+        e.printStackTrace(); // Hapus ini jika tidak ingin terlalu verbose
     }
 }
