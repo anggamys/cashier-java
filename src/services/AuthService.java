@@ -6,54 +6,49 @@ import utils.*;
 
 public class AuthService {
 
-    private OwnerRepo ownerRepo;
+    private final OwnerRepo ownerRepo;
+    private final CashierRepo cashierRepo;
+    private final PelangganRepo pelangganRepo;
 
     public AuthService() {
         this.ownerRepo = new OwnerRepo();
+        this.cashierRepo = new CashierRepo();
+        this.pelangganRepo = new PelangganRepo();
     }
 
     public Object authenticate(String username, String password) {
+        if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
+            System.out.println("❌ Username dan password tidak boleh kosong");
+            return null;
+        }
 
+        // Coba autentikasi sebagai Owner
         Owner owner = ownerRepo.getOwnerByUsername(username);
-        if (owner != null) {
-            String hashedPassword = owner.getPassword();
-
-            if (FormatUtil.checkPassword(password, hashedPassword)){                
-                return owner;
-            } else {
-                System.out.println("❌ Invalid password");
-                return null;
-            }
-            
+        if (owner != null && isPasswordValid(password, owner.getPassword())) {
+            return owner;
         }
 
-        Cashier cashier = new CashierRepo().getCashierByUsername(username);
-        if (cashier != null) {
-            String hashedPassword = cashier.getPassword();
-
-            if (FormatUtil.checkPassword(password, hashedPassword)){
-                return cashier;
-            } else {
-                System.out.println("❌ Invalid password");
-                return null;
-            }
+        // Coba autentikasi sebagai Cashier
+        Cashier cashier = cashierRepo.getCashierByUsername(username);
+        if (cashier != null && isPasswordValid(password, cashier.getPassword())) {
+            return cashier;
         }
 
-        Pelanggan pelanggan = new PelangganRepo().getPelangganByUsername(username);
-        if (pelanggan != null) {
-            String hashedPassword = pelanggan.getPassword();
-
-            if (FormatUtil.checkPassword(password, hashedPassword)){
-                return pelanggan;
-            } else {
-                System.out.println("❌ Invalid password");
-                return null;
-            }
+        // Coba autentikasi sebagai Pelanggan
+        Pelanggan pelanggan = pelangganRepo.getPelangganByUsername(username);
+        if (pelanggan != null && isPasswordValid(password, pelanggan.getPassword())) {
+            return pelanggan;
         }
 
-        System.out.println("❌ User not found");
+        System.out.println("❌ Username atau password salah");
         return null;
- 
     }
-    
+
+    private boolean isPasswordValid(String inputPassword, String hashedPassword) {
+        boolean valid = FormatUtil.checkPassword(inputPassword, hashedPassword);
+        if (!valid) {
+            System.out.println("❌ Invalid password");
+        }
+        return valid;
+    }
 }

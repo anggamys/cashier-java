@@ -30,7 +30,6 @@ public class PelangganRepo {
                 return newPelanggan;
             }
 
-            System.err.println("❌ Failed to add pelanggan.");
         } catch (SQLException e) {
             FormatUtil.logError("PelangganRepo", "addPelanggan", e);
         }
@@ -48,7 +47,6 @@ public class PelangganRepo {
                 return mapResultSetToPelanggan(rs);
             }
 
-            System.err.println("❌ Pelanggan not found with username: " + username);
         } catch (SQLException e) {
             FormatUtil.logError("PelangganRepo", "getPelangganByUsername", e);
         }
@@ -66,7 +64,6 @@ public class PelangganRepo {
                 return mapResultSetToPelanggan(rs);
             }
 
-            System.err.println("❌ Pelanggan not found with ID: " + id);
         } catch (SQLException e) {
             FormatUtil.logError("PelangganRepo", "getPelangganById", e);
         }

@@ -1,70 +1,38 @@
 package models;
 
 public class ItemTransaction {
-    private int id;
-    private int transactionId;
-    private int productId;
-    private int quantity;
-    private int amount;
 
-    public ItemTransaction() {}
+    private final String id;
+    private final String transactionId;
+    private final String itemId;
+    private final int quantity;
+    private final int subTotal;
 
-    public ItemTransaction(int id, int transactionId, int productId, int quantity, int pricePerItem) {
+    public ItemTransaction(String id, String transactionId, String itemId, int quantity, int subTotal) {
         this.id = id;
         this.transactionId = transactionId;
-        this.productId = productId;
+        this.itemId = itemId;
         this.quantity = quantity;
-        this.amount = quantity * pricePerItem; // 🔥 Hitung otomatis
+        this.subTotal = subTotal;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getTransactionId() {
+    public String getTransactionId() {
         return transactionId;
     }
 
-    public void setTransactionId(int transactionId) {
-        this.transactionId = transactionId;
-    }
-
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
+    public String getItemId() {
+        return itemId;
     }
 
     public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-    
-    public int getAmount() {
-        return amount;
-    }
-    
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    @Override
-    public String toString() {
-        return "ItemTransaction{" +
-                "id=" + id +
-                ", transactionId=" + transactionId +
-                ", productId=" + productId +
-                ", quantity=" + quantity +
-                ", amount=" + amount +
-                '}';
+    public int getSubTotal() {
+        return subTotal;
     }
 }

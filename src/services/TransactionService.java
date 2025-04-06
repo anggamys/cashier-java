@@ -1,85 +1,97 @@
 package services;
 
-import models.ItemTransaction;
-import models.Product;
-import models.Transaction;
-import repository.DatabaseConnection;
-import repository.ItemTransactionDao;
-import repository.ProductDao;
-import repository.TransactionDao;
-import repository.TransactionManager;
+import repository.*;
+import models.*;
+import utils.*;
 
-import java.sql.SQLException;
+import java.time.*;
 
 public class TransactionService {
-    private final TransactionDao transactionDao;
-    private final ItemTransactionDao itemTransactionDao;
-    private final ProductDao productDao;
 
+    private final TransactionRepo transactionRepo;
+    private final ItemTransactionRepo itemTransactionRepo;
+    private final MakananRepo makananRepo;
+    private final MinumanRepo minumanRepo;
+    
     public TransactionService() {
-        this.transactionDao = new TransactionDao();
-        this.itemTransactionDao = new ItemTransactionDao();
-        this.productDao = new ProductDao();
+        this.transactionRepo = new TransactionRepo();
+        this.itemTransactionRepo = new ItemTransactionRepo();
+        this.makananRepo = new MakananRepo();
+        this.minumanRepo = new MinumanRepo();
     }
 
-    public int addTransaction(String customerName, int[] productIds, int[] quantities) {
-        try (TransactionManager tx = new TransactionManager(DatabaseConnection.getConnection())) {
-            Transaction transaction = new Transaction();
-            transaction.setCustomerName(customerName);
-            transaction.setTotalPrice(0);
-
-            int transactionId = transactionDao.addTransaction(transaction, tx.getConnection());
-            if (transactionId == -1) {
-                System.out.println("❌ Failed to create transaction!");
-                return -1;
+    public Transaction addTransaction(String customerName, String[] itemsId, int[] quantities) {
+        String transactionId = FormatUtil.generateUniqueID();
+    
+        try {
+            Transaction transaction = new Transaction(transactionId, customerName, 0, LocalDateTime.now());
+            Transaction createdTransaction = transactionRepo.addTransaction(transaction);
+    
+            if (createdTransaction == null) {
+                System.out.println("❌ Gagal membuat transaksi.");
+                return null;
             }
-
-            int totalPrice = processItems(transactionId, productIds, quantities, tx);
-            if (totalPrice == -1) return -1; 
-            
-            transactionDao.updateTotalPrice(transactionId, totalPrice, tx.getConnection());
-            tx.commit();
-
-            System.out.println("✅ Transaction added successfully! ID: " + transactionId);
-            return transactionId;
-        } catch (SQLException e) {
-            System.out.println("❌ Failed to create transaction: " + e.getMessage());
-            return -1;
-        }
-    }
-
-    private int processItems(int transactionId, int[] productIds, int[] quantities, TransactionManager tx) throws SQLException {
-        int totalPrice = 0;
-
-        for (int i = 0; i < productIds.length; i++) {
-            Product product = productDao.getProductById(productIds[i], tx.getConnection());
-            if (product == null) {
-                System.out.println("❌ Product ID " + productIds[i] + " not found!");
-                return -1;
+    
+            int totalAmount = processItems(transactionId, itemsId, quantities);
+            if (totalAmount < 0) {
+                System.out.println("❌ Gagal memproses item transaksi.");
+                return null;
             }
-
-            if (product.getStock() < quantities[i]) {
-                System.out.println("❌ Insufficient stock for product ID " + productIds[i]);
-                return -1;
-            }
-
-            int itemPrice = product.getPrice() * quantities[i];
-            totalPrice += itemPrice;
-
-            ItemTransaction itemTransaction = new ItemTransaction(0, transactionId, productIds[i], quantities[i], itemPrice);
-            itemTransactionDao.addItemTransaction(itemTransaction, tx.getConnection());
-            productDao.updateStockProduct(productIds[i], quantities[i], tx.getConnection());
-        }
-
-        return totalPrice;
-    }
-
-    public Transaction getTransactionById(int id) {
-        try (TransactionManager tx = new TransactionManager(DatabaseConnection.getConnection())) {
-            return transactionDao.getTransactionById(id, tx.getConnection());
-        } catch (SQLException e) {
-            System.out.println("❌ Failed to fetch transaction: " + e.getMessage());
+    
+            // Update total amount
+            transactionRepo.updateTransactionAmount(transactionId, totalAmount);
+    
+            // Ambil transaksi yang telah diperbarui dari database
+            Transaction updatedTransaction = transactionRepo.getTransactionById(transactionId);
+            return updatedTransaction;
+    
+        } catch (Exception e) {
+            FormatUtil.logError("TransactionService", "addTransaction", e);
             return null;
+        }
+    }
+    
+    private int processItems(String transactionId, String[] itemsId, int[] quantities) {
+        int totalAmount = 0;
+
+        try {
+            for (int i = 0; i < itemsId.length; i++) {
+                String itemId = itemsId[i];
+                int quantity = quantities[i];
+
+                // Cek apakah makanan atau minuman
+                Makanan makanan = makananRepo.getMakananById(itemId);
+                Minuman minuman = minumanRepo.getMinumanById(itemId);
+
+                int harga = 0;
+
+                if (makanan != null && makanan.getIsReady()) {
+                    harga = makanan.getHarga();
+                } else if (minuman != null && minuman.getIsReady()) {
+                    harga = minuman.getHarga();
+                } else {
+                    System.out.println("❌ Item tidak ditemukan atau tidak tersedia: " + itemId);
+                    return -1;
+                }
+
+                int subtotal = harga * quantity;
+                totalAmount += subtotal;
+
+                // Buat dan simpan item transaksi
+                String itemTransactionId = FormatUtil.generateUniqueID();
+                ItemTransaction itemTransaction = new ItemTransaction(itemTransactionId, transactionId, itemId, quantity, subtotal);
+
+                if (itemTransactionRepo.addItemTransaction(itemTransaction) == null) {
+                    System.out.println("❌ Gagal menyimpan item transaksi untuk item: " + itemId);
+                    return -1;
+                }
+            }
+
+            return totalAmount;
+
+        } catch (Exception e) {
+            FormatUtil.logError("TransactionService", "processItems", e);
+            return -1;
         }
     }
 }

@@ -3,59 +3,36 @@ package models;
 import java.time.LocalDateTime;
 
 public class Transaction {
-    private int id;
-    private String customerName;
-    private int totalPrice;
-    private LocalDateTime date; 
-    
-    public Transaction() {}
 
-    public Transaction(int id, String customerName, int totalPrice, LocalDateTime date) {
+    private final String id;
+    private final String customerName;
+    private final int totalAmount;
+    private final LocalDateTime date;
+
+    public Transaction(String id, String customerName, int totalAmount, LocalDateTime date) {
         this.id = id;
         this.customerName = customerName;
-        this.totalPrice = totalPrice;
-        this.date = LocalDateTime.now();
+        this.totalAmount = totalAmount;
+        this.date = date != null ? date : LocalDateTime.now(); // fallback jika null
     }
 
-    public int getId() {
+    public String getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getCustomerName() {
         return customerName;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public int getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(int totalPrice) {
-        this.totalPrice = totalPrice;
+    public int getTotalAmount() {
+        return totalAmount;
     }
 
     public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
-    @Override
-    public String toString() {
-        return "Transaction{" +
-                "id=" + id +
-                ", customerName='" + customerName + '\'' +
-                ", totalPrice=" + totalPrice +
-                ", date=" + date +
-                '}';
+    public int setTotalAmount(int totalAmount) {
+        return this.totalAmount;
     }
 }

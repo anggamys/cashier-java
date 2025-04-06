@@ -30,7 +30,6 @@ public class OwnerRepo {
                 return newOwner;
             }
 
-            System.err.println("❌ Failed to add owner.");
         } catch (SQLException e) {
             FormatUtil.logError("OwnerRepo", "addOwner", e);
         }
@@ -48,7 +47,6 @@ public class OwnerRepo {
                 return mapResultSetToOwner(rs);
             }
 
-            System.err.println("❌ Owner not found with username: " + username);
         } catch (SQLException e) {
             FormatUtil.logError("OwnerRepo", "getOwnerByUsername", e);
         }
@@ -66,7 +64,6 @@ public class OwnerRepo {
                 return mapResultSetToOwner(rs);
             }
 
-            System.err.println("❌ Owner not found with ID: " + id);
         } catch (SQLException e) {
             FormatUtil.logError("OwnerRepo", "getOwnerById", e);
         }
