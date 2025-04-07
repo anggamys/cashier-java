@@ -9,6 +9,8 @@ public class MinumanRepo {
     private static final String ADD_MINUMAN = "INSERT INTO minuman (id, name, category, harga, is_ready) VALUES (?, ?, ?, ?, ?)";
     private static final String GET_BY_ID = "SELECT * FROM minuman WHERE id = ?";
     private static final String GET_ALL = "SELECT * FROM minuman";
+    private static final String UPDATE_MINUMAN = "UPDATE minuman SET name = ?, category = ?, harga = ?, is_ready = ? WHERE id = ?";
+    private static final String DELETE_MINUMAN = "DELETE FROM minuman WHERE id = ?";
     private static final int MAX_MINUMAN = 100;
 
     public Minuman addMinuman(Minuman newMinuman) {
@@ -62,6 +64,39 @@ public class MinumanRepo {
         } catch (SQLException e) {
             FormatUtil.logError("MinumanRepo", "getAllMinuman", e);
             return null;
+        }
+    }
+
+    public Minuman updateMinuman(Minuman updatedMinuman) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(UPDATE_MINUMAN)) {
+
+            stmt.setString(1, updatedMinuman.getName());
+            stmt.setString(2, updatedMinuman.getCategory());
+            stmt.setInt(3, updatedMinuman.getHarga());
+            stmt.setBoolean(4, updatedMinuman.getIsReady());
+            stmt.setString(5, updatedMinuman.getId());
+
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0 ? updatedMinuman : null;
+
+        } catch (SQLException e) {
+            FormatUtil.logError("MinumanRepo", "updateMinuman", e);
+            return null;
+        }
+    }
+
+    public boolean deleteMinuman(String id) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(DELETE_MINUMAN)) {
+
+            stmt.setString(1, id);
+            int rowsDeleted = stmt.executeUpdate();
+            return rowsDeleted > 0;
+
+        } catch (SQLException e) {
+            FormatUtil.logError("MinumanRepo", "deleteMinuman", e);
+            return false;
         }
     }
 

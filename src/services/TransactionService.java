@@ -12,7 +12,7 @@ public class TransactionService {
     private final ItemTransactionRepo itemTransactionRepo;
     private final MakananRepo makananRepo;
     private final MinumanRepo minumanRepo;
-    
+
     public TransactionService() {
         this.transactionRepo = new TransactionRepo();
         this.itemTransactionRepo = new ItemTransactionRepo();
@@ -20,69 +20,71 @@ public class TransactionService {
         this.minumanRepo = new MinumanRepo();
     }
 
-    public Transaction addTransaction(String customerName, String[] itemsId, int[] quantities) {
+    public Transaction addTransaction(String customerName, String[] itemIds, int[] quantities) {
+        if (customerName == null || customerName.isBlank()) {
+            System.out.println("❌ Nama pelanggan tidak boleh kosong.");
+            return null;
+        }
+
+        if (itemIds == null || quantities == null || itemIds.length != quantities.length || itemIds.length == 0) {
+            System.out.println("❌ Daftar item atau kuantitas tidak valid.");
+            return null;
+        }
+
+        for (int qty : quantities) {
+            if (qty <= 0) {
+                System.out.println("❌ Kuantitas harus lebih dari 0.");
+                return null;
+            }
+        }
+
         String transactionId = FormatUtil.generateUniqueID();
-    
+        Transaction transaction = new Transaction(transactionId, customerName.trim(), 0, LocalDateTime.now());
+
         try {
-            Transaction transaction = new Transaction(transactionId, customerName, 0, LocalDateTime.now());
             Transaction createdTransaction = transactionRepo.addTransaction(transaction);
-    
             if (createdTransaction == null) {
                 System.out.println("❌ Gagal membuat transaksi.");
                 return null;
             }
-    
-            int totalAmount = processItems(transactionId, itemsId, quantities);
+
+            int totalAmount = processItems(transactionId, itemIds, quantities);
             if (totalAmount < 0) {
                 System.out.println("❌ Gagal memproses item transaksi.");
                 return null;
             }
-    
-            // Update total amount
+
             transactionRepo.updateTransactionAmount(transactionId, totalAmount);
-    
-            // Ambil transaksi yang telah diperbarui dari database
-            Transaction updatedTransaction = transactionRepo.getTransactionById(transactionId);
-            return updatedTransaction;
-    
+            return transactionRepo.getTransactionById(transactionId);
+
         } catch (Exception e) {
             FormatUtil.logError("TransactionService", "addTransaction", e);
             return null;
         }
     }
-    
-    private int processItems(String transactionId, String[] itemsId, int[] quantities) {
+
+    private int processItems(String transactionId, String[] itemIds, int[] quantities) {
         int totalAmount = 0;
 
         try {
-            for (int i = 0; i < itemsId.length; i++) {
-                String itemId = itemsId[i];
+            for (int i = 0; i < itemIds.length; i++) {
+                String itemId = itemIds[i];
                 int quantity = quantities[i];
 
-                // Cek apakah makanan atau minuman
-                Makanan makanan = makananRepo.getMakananById(itemId);
-                Minuman minuman = minumanRepo.getMinumanById(itemId);
-
-                int harga = 0;
-
-                if (makanan != null && makanan.getIsReady()) {
-                    harga = makanan.getHarga();
-                } else if (minuman != null && minuman.getIsReady()) {
-                    harga = minuman.getHarga();
-                } else {
+                int price = getItemPrice(itemId);
+                if (price < 0) {
                     System.out.println("❌ Item tidak ditemukan atau tidak tersedia: " + itemId);
                     return -1;
                 }
 
-                int subtotal = harga * quantity;
+                int subtotal = price * quantity;
                 totalAmount += subtotal;
 
-                // Buat dan simpan item transaksi
                 String itemTransactionId = FormatUtil.generateUniqueID();
                 ItemTransaction itemTransaction = new ItemTransaction(itemTransactionId, transactionId, itemId, quantity, subtotal);
 
                 if (itemTransactionRepo.addItemTransaction(itemTransaction) == null) {
-                    System.out.println("❌ Gagal menyimpan item transaksi untuk item: " + itemId);
+                    System.out.println("❌ Gagal menyimpan item transaksi: " + itemId);
                     return -1;
                 }
             }
@@ -93,5 +95,19 @@ public class TransactionService {
             FormatUtil.logError("TransactionService", "processItems", e);
             return -1;
         }
+    }
+
+    private int getItemPrice(String itemId) {
+        Makanan makanan = makananRepo.getMakananById(itemId);
+        if (makanan != null && makanan.getIsReady()) {
+            return makanan.getHarga();
+        }
+
+        Minuman minuman = minumanRepo.getMinumanById(itemId);
+        if (minuman != null && minuman.getIsReady()) {
+            return minuman.getHarga();
+        }
+
+        return -1;
     }
 }

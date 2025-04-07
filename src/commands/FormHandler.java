@@ -65,4 +65,20 @@ public class FormHandler {
             }
         }
     }
+
+    // Confirmation form
+    public static boolean confirmationForm(String message) {
+        while (true) {
+            System.out.printf(message);
+            String input = InputUtil.readLine().trim().toLowerCase();
+
+            if (input.equals("y") || input.equals("yes") || input.equals("ya")) {
+                return true;
+            } else if (input.equals("n") || input.equals("no") || input.equals("tidak")) {
+                return false;
+            } else {
+                System.out.println("\n❌ Pilihan tidak valid. Silakan coba lagi.\n");
+            }
+        }
+    }
 }

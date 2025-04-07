@@ -35,8 +35,8 @@ public class SessionUtil {
     public boolean isOwner() {
         return currentUser instanceof Owner;
     }
-    
-    public boolean isCachier() {
+
+    public boolean isCashier() {
         return currentUser instanceof Cashier;
     }
 
@@ -49,7 +49,7 @@ public class SessionUtil {
     }
 
     public Cashier getCashier() {
-        return isCachier() ? (Cashier) currentUser : null;
+        return isCashier() ? (Cashier) currentUser : null;
     }
 
     public Pelanggan getPelanggan() {

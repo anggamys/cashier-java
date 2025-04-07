@@ -10,6 +10,8 @@ public class CashierRepo {
     private static final String GET_CASHIER_BY_USERNAME = "SELECT * FROM cashier WHERE username = ?";
     private static final String GET_CASHIER_BY_ID = "SELECT * FROM cashier WHERE id = ?";
     private static final String GET_ALL_CASHIERS = "SELECT * FROM cashier";
+    private static final String UPDATE_CASHIER = "UPDATE cashier SET name = ?, email = ?, phone = ?, address = ?, username = ?, password = ? WHERE id = ?";
+    private static final String DELETE_CASHIER = "DELETE FROM cashier WHERE id = ?";
     private static final int MAX_CASHIERS = 100;
 
     public Cashier addCashier(final Cashier cashier) {
@@ -81,6 +83,41 @@ public class CashierRepo {
         } catch (SQLException e) {
             FormatUtil.logError("CashierRepo", "getAllCashiers", e);
             return null;
+        }
+    }
+
+    public Cashier updateCashier(final Cashier cashier) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(UPDATE_CASHIER)) {
+
+            stmt.setString(1, cashier.getName());
+            stmt.setString(2, cashier.getEmail());
+            stmt.setInt(3, cashier.getPhoneNumber());
+            stmt.setString(4, cashier.getAddress());
+            stmt.setString(5, cashier.getUsername());
+            stmt.setString(6, cashier.getPassword());
+            stmt.setString(7, cashier.getId());
+
+            int rowsUpdated = stmt.executeUpdate();
+
+            return rowsUpdated > 0 ? cashier : null;
+
+        } catch (SQLException e) {
+            FormatUtil.logError("CashierRepo", "updateCashier", e);
+            return null;
+        }
+    }
+
+    public boolean deleteCashier(final String id) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(DELETE_CASHIER)) {
+
+            stmt.setString(1, id);
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            FormatUtil.logError("CashierRepo", "deleteCashier", e);
+            return false;
         }
     }
 

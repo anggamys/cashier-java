@@ -22,9 +22,7 @@ public class TransaksiHandler {
 
     public void addTransaction() {
         InterfaceUtil.clearScreen();
-        System.out.println("=================================");
-        System.out.println("         TRANSAKSI BARU          ");
-        System.out.println("=================================\n");
+        printHeader("TRANSAKSI BARU");
 
         System.out.println(">> Menu Makanan:");
         makananHandler.lihatMenuMakanan();
@@ -32,45 +30,45 @@ public class TransaksiHandler {
         System.out.println(">> Menu Minuman:");
         minumanHandler.lihatMenuMinuman();
 
-        String customerName = FormHandler.stringForm("Nama Pelanggan           : ");
-        int jumlahPesanan = FormHandler.integerForm("Jumlah Item yang Dipesan : ");
+        String customerName  = FormHandler.stringForm("Nama Pelanggan           : ").trim();
+        int jumlahPesanan    = FormHandler.integerForm("Jumlah Item yang Dipesan : ");
 
-        String[] itemIds = new String[jumlahPesanan];
-        int[] itemQuantities = new int[jumlahPesanan];
-        String[] itemNames = new String[jumlahPesanan];
+        if (jumlahPesanan <= 0) {
+            System.out.println("❌ Jumlah item tidak boleh kurang dari 1.");
+            InterfaceUtil.pressEnterToContinue();
+            return;
+        }
+
+        String[] itemIds       = new String[jumlahPesanan];
+        int[]    itemQuantities = new int[jumlahPesanan];
+        String[] itemNames     = new String[jumlahPesanan];
 
         System.out.println("\n>> Masukkan Detail Pesanan:");
         for (int i = 0; i < jumlahPesanan; i++) {
             System.out.println("- Pesanan ke-" + (i + 1));
-            String itemId = FormHandler.stringForm("   ID Item    : ");
-            int quantity = FormHandler.integerForm("   Jumlah     : ");
 
-            String itemName = getItemNameById(itemId);
+            String itemId  = FormHandler.stringForm("   ID Item    : ").trim();
+            int quantity   = FormHandler.integerForm("   Jumlah     : ");
 
-            if (itemName == null) {
-                System.out.println("❌ Item tidak ditemukan. Silakan ulangi.");
-                i--; // ulangi input untuk indeks ini
+            if (quantity <= 0) {
+                System.out.println("❌ Jumlah harus lebih dari 0.");
+                i--;
                 continue;
             }
 
-            itemIds[i] = itemId;
+            String itemName = getItemNameById(itemId);
+            if (itemName == null) {
+                System.out.println("❌ Item tidak ditemukan atau tidak tersedia. Silakan ulangi.");
+                i--;
+                continue;
+            }
+
+            itemIds[i]       = itemId;
             itemQuantities[i] = quantity;
-            itemNames[i] = itemName;
+            itemNames[i]     = itemName;
         }
 
-        System.out.println("\n=================================");
-        System.out.println("        KONFIRMASI PESANAN       ");
-        System.out.println("=================================");
-        System.out.println("Nama Pelanggan : " + customerName);
-        System.out.println("Detail Pesanan :");
-        for (int i = 0; i < jumlahPesanan; i++) {
-            System.out.println("  - " + itemNames[i] + " (x" + itemQuantities[i] + ")");
-        }
-
-        System.out.println("=================================");
-        String konfirmasi = FormHandler.stringForm("Lanjutkan transaksi? (y/n): ");
-
-        if (!konfirmasi.equalsIgnoreCase("y")) {
+        if (!konfirmasiPesanan(customerName, itemNames, itemQuantities)) {
             System.out.println("\n❌ Transaksi dibatalkan.");
             InterfaceUtil.pressEnterToContinue();
             return;
@@ -90,6 +88,27 @@ public class TransaksiHandler {
         InterfaceUtil.pressEnterToContinue();
     }
 
+    private boolean konfirmasiPesanan(String customerName, String[] itemNames, int[] quantities) {
+        printHeader("KONFIRMASI PESANAN");
+
+        System.out.println("Nama Pelanggan : " + customerName);
+        System.out.println("Detail Pesanan :");
+        for (int i = 0; i < itemNames.length; i++) {
+            System.out.println("  - " + itemNames[i] + " (x" + quantities[i] + ")");
+        }
+        System.out.println("=================================");
+
+        boolean isConfirmed = FormHandler.confirmationForm("Apakah Anda yakin dengan pesanan ini? (y/n) : ");
+
+        if (isConfirmed) {
+            System.out.println("✅ Pesanan dikonfirmasi.");
+            return true;
+        } else {
+            System.out.println("❌ Pesanan dibatalkan.");
+            return false;
+        }
+    }
+
     private String getItemNameById(String id) {
         Makanan makanan = makananService.getMakananById(id);
         if (makanan != null && makanan.getIsReady()) {
@@ -102,5 +121,11 @@ public class TransaksiHandler {
         }
 
         return null;
+    }
+
+    private void printHeader(String title) {
+        System.out.println("=================================");
+        System.out.printf("         %-23s%n", title);
+        System.out.println("=================================\n");
     }
 }

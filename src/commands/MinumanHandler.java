@@ -12,48 +12,102 @@ public class MinumanHandler {
         this.minumanService = new MinumanService();
     }
 
-    public void tambahMenuMinuman(){
+    public void tambahMenuMinuman() {
         InterfaceUtil.clearScreen();
+        System.out.println("=== TAMBAH MENU MINUMAN ===");
 
-        System.out.println("=== Tambah Menu Minuman ===");
-        String namaMinuman = FormHandler.stringForm("Masukkan nama minuman: ");
-        int hargaMinuman = FormHandler.integerForm("Masukkan harga minuman: ");
+        String nama = FormHandler.stringForm("Masukkan nama minuman: ");
+        int harga = FormHandler.integerForm("Masukkan harga minuman: ");
 
-        Minuman newMinuman = minumanService.addMinuman(namaMinuman, hargaMinuman);
+        Minuman newMinuman = minumanService.addMinuman(nama, harga);
+
         if (newMinuman != null) {
-            System.out.println("Menu minuman berhasil ditambahkan!");
-            System.out.println("Nama Minuman: " + newMinuman.getName());
-            System.out.println("Harga Minuman: " + FormatUtil.formatCurrency(newMinuman.getHarga()));
-            System.out.println("-----------------------------");
-
-            InterfaceUtil.pressEnterToContinue();
+            System.out.println("\n✅ Menu minuman berhasil ditambahkan:");
+            printMinuman(newMinuman);
         } else {
-            System.out.println("Gagal menambahkan menu minuman.");
-
-            InterfaceUtil.pressEnterToContinue();
+            System.out.println("\n❌ Gagal menambahkan menu minuman.");
         }
+
+        InterfaceUtil.pressEnterToContinue();
     }
 
-    public void lihatMenuMinuman(){
-        System.out.println("=== Daftar Menu Minuman ===");
-        
-        Minuman[] minumanList = minumanService.getAllMinuman();
+    public void lihatMenuMinuman() {
+        System.out.println("=== DAFTAR MENU MINUMAN ===");
 
-        if (minumanList == null || minumanList.length == 0 || minumanList[0] == null) {
-            System.out.println("Tidak ada menu minuman yang tersedia.");
-            System.out.println("Silakan tambahkan menu minuman terlebih dahulu.");
+        Minuman[] list = minumanService.getAllMinuman();
+
+        if (list == null || list.length == 0 || list[0] == null) {
+            System.out.println("Belum ada menu minuman tersedia.");
+            System.out.println("Silakan tambahkan menu terlebih dahulu.");
+        } else {
+            for (Minuman m : list) {
+                if (m == null) continue;
+                printMinuman(m);
+            }
+        }
+
+        InterfaceUtil.pressEnterToContinue();
+    }
+
+    public void ubahMenuMinuman() {
+        InterfaceUtil.clearScreen();
+        System.out.println("=== UBAH MENU MINUMAN ===");
+
+        lihatMenuMinuman();
+
+        String id = FormHandler.stringForm("\nMasukkan ID minuman yang ingin diubah: ");
+        String namaBaru = FormHandler.stringForm("Masukkan nama minuman baru: ");
+        int hargaBaru = FormHandler.integerForm("Masukkan harga minuman baru: ");
+
+        if (!FormHandler.confirmationForm("Apakah Anda yakin ingin mengubah menu ini? (y/n): ")) {
+            System.out.println("❌ Pengubahan dibatalkan.");
             InterfaceUtil.pressEnterToContinue();
             return;
         }
 
-        for (Minuman minuman : minumanList) {
-            if (minuman == null) break; // atau continue, tergantung gaya data kamu
-            System.out.println("-----------------------------");
-            System.out.println("ID Minuman: " + minuman.getId());
-            System.out.println("Nama Minuman: " + minuman.getName());
-            System.out.println("Harga Minuman: " + FormatUtil.formatCurrency(minuman.getHarga()));
-            System.out.println("Status Minuman: " + (minuman.getIsReady() ? "Tersedia" : "Tidak Tersedia"));
-            System.out.println("-----------------------------");
+        Minuman updated = minumanService.updateMinuman(id, namaBaru, hargaBaru);
+
+        if (updated != null) {
+            System.out.println("\n✅ Menu minuman berhasil diubah:");
+            printMinuman(updated);
+        } else {
+            System.out.println("\n❌ Gagal mengubah menu minuman.");
         }
+
+        InterfaceUtil.pressEnterToContinue();
+    }
+
+    public void hapusMenuMinuman() {
+        InterfaceUtil.clearScreen();
+        System.out.println("=== HAPUS MENU MINUMAN ===");
+
+        lihatMenuMinuman();
+
+        String id = FormHandler.stringForm("\nMasukkan ID minuman yang ingin dihapus: ");
+
+        if (!FormHandler.confirmationForm("Apakah Anda yakin ingin menghapus menu ini? (y/n): ")) {
+            System.out.println("❌ Penghapusan dibatalkan.");
+            InterfaceUtil.pressEnterToContinue();
+            return;
+        }
+
+        boolean deleted = minumanService.deleteMinuman(id);
+
+        if (deleted) {
+            System.out.println("\n✅ Menu minuman berhasil dihapus.");
+        } else {
+            System.out.println("\n❌ Gagal menghapus menu minuman.");
+        }
+
+        InterfaceUtil.pressEnterToContinue();
+    }
+
+    private void printMinuman(Minuman minuman) {
+        System.out.println("------------------------------");
+        System.out.println("ID     : " + minuman.getId());
+        System.out.println("Nama   : " + minuman.getName());
+        System.out.println("Harga  : " + FormatUtil.formatCurrency(minuman.getHarga()));
+        System.out.println("Status : " + (minuman.getIsReady() ? "Tersedia" : "Tidak Tersedia"));
+        System.out.println("------------------------------");
     }
 }
