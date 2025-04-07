@@ -24,6 +24,7 @@ public class MenuHandler {
             System.out.println("2. Lihat Daftar Menu");
             System.out.println("3. Ubah Menu");
             System.out.println("4. Hapus Menu");
+            System.out.println("5. Lihat Ringkasan Transaksi");            
             System.out.println("0. Logout");
 
             int pilihan = FormHandler.integerForm("Pilih menu: ");
@@ -32,6 +33,7 @@ public class MenuHandler {
                 case 2 -> submenuLihatMenu();
                 case 3 -> submenuUbahMenu();
                 case 4 -> submenuHapusMenu();
+                case 5 -> transaksiHandler.lihatSummaryTransaksi();
                 case 0 -> {
                     authHandler.logout();
                     return;

@@ -12,6 +12,8 @@ public class OwnerRepo {
     private static final String SELECT_BY_USERNAME_SQL = "SELECT * FROM owners WHERE username = ?";
     private static final String SELECT_BY_ID_SQL = "SELECT * FROM owners WHERE id = ?";
     private static final String SELECT_ALL_SQL = "SELECT * FROM owners";
+    private static final String UPDATE_OWNER_SQL = "UPDATE owners SET name = ?, email = ?, phone_number = ?, address = ?, username = ?, password = ? WHERE id = ?";
+    private static final String DELETE_BY_ID_SQL = "DELETE FROM owners WHERE id = ?";
 
     public Owner addOwner(Owner newOwner) {
         try (Connection conn = DatabaseConnection.getConnection();
@@ -87,6 +89,41 @@ public class OwnerRepo {
             return null;
         }
     }
+
+    public Owner updateOwner(Owner updatedOwner) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(UPDATE_OWNER_SQL)) {
+    
+            stmt.setString(1, updatedOwner.getName());
+            stmt.setString(2, updatedOwner.getEmail());
+            stmt.setInt(3, updatedOwner.getPhoneNumber());
+            stmt.setString(4, updatedOwner.getAddress());
+            stmt.setString(5, updatedOwner.getUsername());
+            stmt.setString(6, updatedOwner.getPassword());
+            stmt.setString(7, updatedOwner.getId());
+    
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0 ? updatedOwner : null;
+            
+        } catch (SQLException e) {
+            FormatUtil.logError("OwnerRepo", "updateOwner", e);
+            return null;
+        }
+    }
+
+    public boolean deleteOwnerById(String id) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(DELETE_BY_ID_SQL)) {
+    
+            stmt.setString(1, id);
+            int rowsDeleted = stmt.executeUpdate();
+            return rowsDeleted > 0;
+    
+        } catch (SQLException e) {
+            FormatUtil.logError("OwnerRepo", "deleteOwnerById", e);
+            return false;
+        }
+    }    
 
     // Helper method
     private Owner mapResultSetToOwner(ResultSet rs) throws SQLException {

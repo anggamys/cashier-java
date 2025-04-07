@@ -1,6 +1,8 @@
 package repository;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import utils.FormatUtil;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -17,7 +19,7 @@ public class DatabaseConnection {
             Class.forName("com.mysql.cj.jdbc.Driver");
             return DriverManager.getConnection(DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
         } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
+            FormatUtil.logError("DatabaseConnection", "getConnection", e);
             return null;
         }
     }

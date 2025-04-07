@@ -49,4 +49,69 @@ public class PelangganService {
             return null;
         }
     }
+
+    public Pelanggan getPelangganById(String id) {
+        try {
+            Pelanggan pelanggan = pelangganRepo.getPelangganById(id);
+            if (pelanggan != null) {
+                System.out.println("Pelanggan found: " + pelanggan);
+                return pelanggan;
+            } else {
+                System.out.println("Pelanggan not found.");
+                return null;
+            }
+        } catch (Exception e) {
+            FormatUtil.logError("PelangganService", "getPelangganById", e);
+            return null;
+        }
+    }
+
+    public Pelanggan[] getAllPelanggan() {
+        try {
+            Pelanggan[] pelanggans = pelangganRepo.getAllPelanggan();
+            if (pelanggans != null) {
+                return pelanggans;
+            } else {
+                System.out.println("No pelanggan found.");
+                return null;
+            }
+        } catch (Exception e) {
+            FormatUtil.logError("PelangganService", "getAllPelanggan", e);
+            return null;
+        }
+    }
+
+    public Pelanggan updatePelanggan(Pelanggan pelanggan) {
+        String newPassword = FormatUtil.hashedPassword(pelanggan.getPassword());
+        pelanggan.setPassword(newPassword);
+        
+        try {
+            Pelanggan updatedPelanggan = pelangganRepo.updatePelanggan(pelanggan);
+            if (updatedPelanggan != null) {
+                return updatedPelanggan;
+            } else {
+                System.out.println("Failed to update pelanggan.");
+                return null;
+            }
+        } catch (Exception e) {
+            FormatUtil.logError("PelangganService", "updatePelanggan", e);
+            return null;
+        }
+    }
+
+    public boolean deletePelanggan(String id) {
+        try {
+            boolean isDeleted = pelangganRepo.deletePelangganById(id);
+            if (isDeleted) {
+                System.out.println("Pelanggan deleted successfully.");
+                return true;
+            } else {
+                System.out.println("Failed to delete pelanggan.");
+                return false;
+            }
+        } catch (Exception e) {
+            FormatUtil.logError("PelangganService", "deletePelanggan", e);
+            return false;
+        }
+    }
 }

@@ -88,6 +88,30 @@ public class TransaksiHandler {
         InterfaceUtil.pressEnterToContinue();
     }
 
+    public void lihatSummaryTransaksi() {
+        InterfaceUtil.clearScreen();
+        printHeader("RINGKASAN TRANSAKSI");
+    
+        TransactionSummary summary = transactionService.getTransactionSummary();
+    
+        System.out.println("📦 Total Transaksi : " + summary.getTotalTransactions());
+        System.out.println("💰 Total Pendapatan: " + FormatUtil.formatCurrency(summary.getTotalIncome()));
+    
+        System.out.println("\n🕒 Transaksi Terakhir:");
+        Transaction latest = summary.getLatestTransaction();
+        if (latest != null) {
+            System.out.println("ID Transaksi : " + latest.getId());
+            System.out.println("Pelanggan    : " + latest.getCustomerName());
+            System.out.println("Total Bayar  : " + FormatUtil.formatCurrency(latest.getTotalAmount()));
+            System.out.println("Tanggal      : " + FormatUtil.formatDateTime(latest.getDate()));
+        } else {
+            System.out.println("Belum ada transaksi yang tercatat.");
+        }
+    
+        InterfaceUtil.pressEnterToContinue();
+    }
+    
+
     private boolean konfirmasiPesanan(String customerName, String[] itemNames, int[] quantities) {
         printHeader("KONFIRMASI PESANAN");
 

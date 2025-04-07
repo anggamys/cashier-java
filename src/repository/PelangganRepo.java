@@ -12,6 +12,8 @@ public class PelangganRepo {
     private static final String SELECT_BY_USERNAME_SQL = "SELECT * FROM pelanggan WHERE username = ?";
     private static final String SELECT_BY_ID_SQL = "SELECT * FROM pelanggan WHERE id = ?";
     private static final String SELECT_ALL_SQL = "SELECT * FROM pelanggan";
+    private static final String UPDATE_PELANGGAN_SQL = "UPDATE pelanggan SET name = ?, email = ?, phone = ?, address = ?, username = ?, password = ? WHERE id = ?";
+    private static final String DELETE_BY_ID_SQL = "DELETE FROM pelanggan WHERE id = ?";
 
     public Pelanggan addPelanggan(Pelanggan newPelanggan) {
         try (Connection conn = DatabaseConnection.getConnection();
@@ -87,6 +89,41 @@ public class PelangganRepo {
             return null;
         }
     }
+
+    public Pelanggan updatePelanggan(Pelanggan updatedPelanggan) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(UPDATE_PELANGGAN_SQL)) {
+    
+            stmt.setString(1, updatedPelanggan.getName());
+            stmt.setString(2, updatedPelanggan.getEmail());
+            stmt.setInt(3, updatedPelanggan.getPhoneNumber());
+            stmt.setString(4, updatedPelanggan.getAddress());
+            stmt.setString(5, updatedPelanggan.getUsername());
+            stmt.setString(6, updatedPelanggan.getPassword());
+            stmt.setString(7, updatedPelanggan.getId());
+    
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0 ? updatedPelanggan : null;
+    
+        } catch (SQLException e) {
+            FormatUtil.logError("PelangganRepo", "updatePelanggan", e);
+            return null;
+        }
+    }
+    
+    public boolean deletePelangganById(String id) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(DELETE_BY_ID_SQL)) {
+    
+            stmt.setString(1, id);
+            int rowsDeleted = stmt.executeUpdate();
+            return rowsDeleted > 0;
+    
+        } catch (SQLException e) {
+            FormatUtil.logError("PelangganRepo", "deletePelangganById", e);
+            return false;
+        }
+    }    
 
     // Helper
     private Pelanggan mapResultSetToPelanggan(ResultSet rs) throws SQLException {

@@ -63,6 +63,69 @@ public class TransactionService {
         }
     }
 
+    public Transaction[] getAllTransactions() {
+        try {
+            Transaction[] transactions = transactionRepo.getAllTransactions();
+            if (transactions.length == 0) {
+                System.out.println("⚠️  Tidak ada transaksi yang ditemukan.");
+                return null;
+            }
+            return transactions;
+        } catch (Exception e) {
+            FormatUtil.logError("TransactionService", "getAllTransactions", e);
+            return null;
+        }
+    }
+
+    public Transaction getTransactionById(String transactionId) {
+        try {
+            Transaction transaction = transactionRepo.getTransactionById(transactionId);
+            if (transaction != null) {
+                return transaction;
+            } else {
+                System.out.println("⚠️  Transaksi tidak ditemukan.");
+                return null;
+            }
+        } catch (Exception e) {
+            FormatUtil.logError("TransactionService", "getTransactionById", e);
+            return null;
+        }
+    }
+
+    public ItemTransaction getItemTransactionById(String itemTransactionId) {
+        try {
+            ItemTransaction itemTransaction = itemTransactionRepo.getItemTransactionById(itemTransactionId);
+            if (itemTransaction != null) {
+                return itemTransaction;
+            } else {
+                System.out.println("⚠️  Item transaksi tidak ditemukan.");
+                return null;
+            }
+        } catch (Exception e) {
+            FormatUtil.logError("TransactionService", "getItemTransactionById", e);
+            return null;
+        }
+    }
+
+    public TransactionSummary getTransactionSummary() {
+        Transaction[] transactions = transactionRepo.getAllTransactions();
+    
+        if (transactions.length == 0) {
+            System.out.println("⚠️  Tidak ada transaksi yang ditemukan.");
+            return new TransactionSummary(0, 0, null);
+        }
+    
+        int totalIncome = 0;
+        for (Transaction t : transactions) {
+            totalIncome += t.getTotalAmount();
+        }
+    
+        Transaction latestTransaction = transactions[0];
+        
+        return new TransactionSummary(transactions.length, totalIncome, latestTransaction);
+    }
+    
+
     private int processItems(String transactionId, String[] itemIds, int[] quantities) {
         int totalAmount = 0;
 

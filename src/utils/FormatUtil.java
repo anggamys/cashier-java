@@ -1,6 +1,8 @@
 package utils;
 
 import java.text.*;
+import java.time.*;
+import java.time.format.*;
 import java.util.*;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -51,6 +53,17 @@ public class FormatUtil {
             return null;
         }
     }
+
+    public static String formatDateTime(LocalDateTime dateTime) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm");
+            return dateTime.format(formatter);
+        } catch (Exception e) {
+            logError("FormatUtil", "formatDateTime", e);
+            return "-";
+        }
+    }
+
 
     public static void logError(String className, String methodName, Exception e) {
         System.out.println("[" + className + ":" + methodName + "] ❌ " + e.getClass().getSimpleName() + " - " + e.getMessage());
