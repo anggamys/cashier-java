@@ -88,6 +88,27 @@ public class TransaksiHandler {
         InterfaceUtil.pressEnterToContinue();
     }
 
+    public void lihatRiwayatTransaksi() {
+        InterfaceUtil.clearScreen();
+        printHeader("RIWAYAT TRANSAKSI");
+
+        Transaction[] transactions = transactionService.getAllTransactions();
+
+        if (transactions.length == 0) {
+            System.out.println("Belum ada transaksi yang tercatat.");
+        } else {
+            for (Transaction transaction : transactions) {
+                System.out.println("ID Transaksi : " + transaction.getId());
+                System.out.println("Pelanggan    : " + transaction.getCustomerName());
+                System.out.println("Total Bayar  : " + FormatUtil.formatCurrency(transaction.getTotalAmount()));
+                System.out.println("Tanggal      : " + FormatUtil.formatDateTime(transaction.getDate()));
+                System.out.println("------------------------------");
+            }
+        }
+
+        InterfaceUtil.pressEnterToContinue();
+    }
+
     public void lihatSummaryTransaksi() {
         InterfaceUtil.clearScreen();
         printHeader("RINGKASAN TRANSAKSI");

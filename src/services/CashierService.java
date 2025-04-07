@@ -12,9 +12,8 @@ public class CashierService {
         this.cashierRepo = new CashierRepo();
     }
 
-    public Cashier addCashier(String firstName, String lastName, int phoneNumber, String email, String address, String username, String password) {
+    public Cashier addCashier(String fullName, int phoneNumber, String email, String address, String username, String password) {
         String cashierID = FormatUtil.generateUniqueID();
-        String fullName = firstName + " " + lastName;
         String hashedPassword = FormatUtil.hashedPassword(password);
 
         try {

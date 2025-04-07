@@ -12,9 +12,8 @@ public class PelangganService {
         this.pelangganRepo = new PelangganRepo();
     }
 
-    public Pelanggan addPelanggan(String firstName, String lastName, int phoneNumber, String email, String address, String username, String password) {
+    public Pelanggan addPelanggan(String fullName, int phoneNumber, String email, String address, String username, String password) {
         String pelangganID = FormatUtil.generateUniqueID();
-        String fullName = firstName + " " + lastName;
         String hashedPassword = FormatUtil.hashedPassword(password);
 
         try {
