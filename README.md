@@ -1,10 +1,10 @@
 # Sistem Manajemen Toko
 
-## Deskripsi:
+## Deskripsi
 
 **Sistem Manajemen Toko** adalah aplikasi berbasis Java yang digunakan untuk mengelola data produk, kategori, dan transaksi penjualan di sebuah toko. Aplikasi ini menggunakan database **MySQL** untuk menyimpan data dan menyediakan antarmuka pengguna berbasis CLI yang sederhana untuk melakukan operasi CRUD (Create, Read, Update, Delete).
 
-## Fitur:
+## Fitur
 
 - Menambahkan, mengedit, dan menghapus produk.
 - Menambahkan, mengedit, dan menghapus kategori.
@@ -15,12 +15,12 @@
   - **Pengguna biasa**: hanya dapat melihat data.
 - Autentikasi pengguna menggunakan username dan password.
 
-## Teknologi yang Digunakan:
+## Teknologi yang Digunakan
 
 - Java (JDK 11+)
 - MySQL
 
-## Prasyarat:
+## Prasyarat
 
 Pastikan perangkat Anda sudah terinstal:
 
@@ -29,7 +29,7 @@ Pastikan perangkat Anda sudah terinstal:
 - Git
 - Terminal / Command Line
 
-## Instalasi:
+## Instalasi
 
 1. **Fork repository** ini ke akun GitHub anda.
 
@@ -53,7 +53,7 @@ Pastikan perangkat Anda sudah terinstal:
 
    Atau gunakan tools seperti **phpMyAdmin** atau **MySQL Workbench**.
 
-## Penggunaan:
+## Penggunaan
 
 1. **Konfigurasi file `.env`:**
 
