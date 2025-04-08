@@ -100,11 +100,16 @@ public class MenuHandler {
         System.out.println("\n=== TAMBAH MENU ===");
         System.out.println("1. Tambah Makanan");
         System.out.println("2. Tambah Minuman");
+        System.out.println("0. Kembali");
 
         int sub = FormHandler.integerForm("Pilih: ");
         switch (sub) {
             case 1 -> makananHandler.tambahMenuMakanan();
             case 2 -> minumanHandler.tambahMenuMinuman();
+            case 0 -> {
+                // Kembali ke menu utama
+                return;
+            }
             default -> System.out.println("❌ Pilihan tidak valid.");
         }
         InterfaceUtil.pressEnterToContinue();
@@ -114,11 +119,16 @@ public class MenuHandler {
         System.out.println("\n=== LIHAT MENU ===");
         System.out.println("1. Menu Makanan");
         System.out.println("2. Menu Minuman");
+        System.out.println("0. Kembali");
 
         int sub = FormHandler.integerForm("Pilih: ");
         switch (sub) {
             case 1 -> makananHandler.lihatMenuMakanan();
             case 2 -> minumanHandler.lihatMenuMinuman();
+            case 0 -> {
+                // Kembali ke menu utama
+                return;
+            }
             default -> System.out.println("❌ Pilihan tidak valid.");
         }
         InterfaceUtil.pressEnterToContinue();
@@ -128,11 +138,16 @@ public class MenuHandler {
         System.out.println("\n=== UBAH MENU ===");
         System.out.println("1. Ubah Makanan");
         System.out.println("2. Ubah Minuman");
+        System.out.println("0. Kembali");
 
         int sub = FormHandler.integerForm("Pilih: ");
         switch (sub) {
             case 1 -> makananHandler.ubahMenuMakanan();
             case 2 -> minumanHandler.ubahMenuMinuman();
+            case 0 -> {
+                // Kembali ke menu utama
+                return;
+            }
             default -> System.out.println("❌ Pilihan tidak valid.");
         }
         InterfaceUtil.pressEnterToContinue();
@@ -142,11 +157,16 @@ public class MenuHandler {
         System.out.println("\n=== HAPUS MENU ===");
         System.out.println("1. Hapus Makanan");
         System.out.println("2. Hapus Minuman");
+        System.out.println("0. Kembali");
 
         int sub = FormHandler.integerForm("Pilih: ");
         switch (sub) {
             case 1 -> makananHandler.hapusMenuMakanan();
             case 2 -> minumanHandler.hapusMenuMinuman();
+            case 0 -> {
+                // Kembali ke menu utama
+                return;
+            }
             default -> System.out.println("❌ Pilihan tidak valid.");
         }
         InterfaceUtil.pressEnterToContinue();
