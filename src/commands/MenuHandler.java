@@ -53,7 +53,7 @@ public class MenuHandler {
             InterfaceUtil.clearScreen();
             System.out.println("=== MENU KASIR ===");
             System.out.println("1. Lihat Menu Makanan/Minuman");
-            System.out.println("3. Proses Transaksi");
+            System.out.println("2. Proses Transaksi");
             System.out.println("0. Logout");
 
             int pilihan = FormHandler.integerForm("Pilih menu: ");
