@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Mar 27, 2025 at 12:47 PM
+-- Generation Time: Apr 08, 2025 at 01:59 PM
 -- Server version: 9.2.0
 -- PHP Version: 8.2.27
 
@@ -24,132 +24,165 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `item_transactions`
+-- Table structure for table `cashier`
 --
 
-CREATE TABLE `item_transactions` (
-  `id` int NOT NULL,
-  `transaction_id` int NOT NULL,
-  `product_id` int NOT NULL,
+CREATE TABLE `cashier` (
+  `id` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `phone` int DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `username` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(100) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `item_transaction`
+--
+
+CREATE TABLE `item_transaction` (
+  `id` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `transaction_id` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `item_id` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
   `quantity` int NOT NULL,
-  `amount` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `sub_total` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `products`
+-- Table structure for table `makanan`
 --
 
-CREATE TABLE `products` (
-  `id` int NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `category` varchar(100) NOT NULL,
-  `price` int NOT NULL,
-  `stock` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `makanan` (
+  `id` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `category` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `harga` int NOT NULL,
+  `is_ready` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `transactions`
+-- Table structure for table `minuman`
 --
 
-CREATE TABLE `transactions` (
-  `id` int NOT NULL,
-  `customer_name` varchar(255) NOT NULL,
-  `total_price` int NOT NULL,
-  `date` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `minuman` (
+  `id` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `category` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `harga` int NOT NULL,
+  `is_ready` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Table structure for table `owners`
 --
 
-CREATE TABLE `users` (
-  `id` int NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `role` enum('cashier','customer','owner') NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `phone` varchar(15) NOT NULL,
-  `address` text NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `owners` (
+  `id` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `phone_number` int DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `username` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(100) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pelanggan`
+--
+
+CREATE TABLE `pelanggan` (
+  `id` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `phone` int DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `username` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(100) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `transaction`
+--
+
+CREATE TABLE `transaction` (
+  `id` varchar(36) COLLATE utf8mb4_general_ci NOT NULL,
+  `customer_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `total_amount` int NOT NULL,
+  `date` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `item_transactions`
+-- Indexes for table `cashier`
 --
-ALTER TABLE `item_transactions`
+ALTER TABLE `cashier`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `transaction_id` (`transaction_id`),
-  ADD KEY `product_id` (`product_id`);
+  ADD UNIQUE KEY `username` (`username`);
 
 --
--- Indexes for table `products`
+-- Indexes for table `item_transaction`
 --
-ALTER TABLE `products`
+ALTER TABLE `item_transaction`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `transaction_id` (`transaction_id`);
+
+--
+-- Indexes for table `makanan`
+--
+ALTER TABLE `makanan`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `transactions`
+-- Indexes for table `minuman`
 --
-ALTER TABLE `transactions`
+ALTER TABLE `minuman`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `users`
+-- Indexes for table `owners`
 --
-ALTER TABLE `users`
+ALTER TABLE `owners`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `username` (`username`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- Indexes for table `pelanggan`
 --
+ALTER TABLE `pelanggan`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
 
 --
--- AUTO_INCREMENT for table `item_transactions`
+-- Indexes for table `transaction`
 --
-ALTER TABLE `item_transactions`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `products`
---
-ALTER TABLE `products`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `transactions`
---
-ALTER TABLE `transactions`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE `transaction`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `item_transactions`
+-- Constraints for table `item_transaction`
 --
-ALTER TABLE `item_transactions`
-  ADD CONSTRAINT `item_transactions_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `transactions` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `item_transactions_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
+ALTER TABLE `item_transaction`
+  ADD CONSTRAINT `item_transaction_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
