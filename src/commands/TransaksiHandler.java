@@ -91,10 +91,10 @@ public class TransaksiHandler {
     public void lihatRiwayatTransaksi() {
         InterfaceUtil.clearScreen();
         printHeader("RIWAYAT TRANSAKSI");
-
+    
         Transaction[] transactions = transactionService.getAllTransactions();
-
-        if (transactions.length == 0) {
+    
+        if (transactions == null || transactions.length == 0) {
             System.out.println("Belum ada transaksi yang tercatat.");
         } else {
             for (Transaction transaction : transactions) {
@@ -105,9 +105,10 @@ public class TransaksiHandler {
                 System.out.println("------------------------------");
             }
         }
-
+    
         InterfaceUtil.pressEnterToContinue();
     }
+    
 
     public void lihatSummaryTransaksi() {
         InterfaceUtil.clearScreen();

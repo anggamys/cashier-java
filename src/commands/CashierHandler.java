@@ -58,7 +58,7 @@ public class CashierHandler {
 
         Cashier[] cashiers = cashierService.getAllCashiers();
 
-        if (cashiers.length == 0) {
+        if (cashiers == null || cashiers.length == 0) {
             System.out.println("❌ Tidak ada kasir yang terdaftar.");
         } else {
             for (Cashier cashier : cashiers) {

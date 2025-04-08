@@ -19,14 +19,16 @@ public class PelangganHandler {
         System.out.println("=== PENDAFTARAN PELANGGAN ===");
 
         String fullName = FormHandler.stringForm("Nama Lengkap: ");
-        int phoneNumber = FormHandler.integerForm("Nomor HP: ");
+        String phoneNumber = FormHandler.phoneForm("Nomor HP: ");
         String email = FormHandler.emailForm("Email: ");
         String address = FormHandler.stringForm("Alamat: ");
         String username = FormHandler.stringForm("Username: ");
         String password = FormHandler.stringForm("Password: ");
 
+        int phoneNumberInt = FormatUtil.parseStrToInt(phoneNumber);
+
         Pelanggan newPelanggan = pelangganService.addPelanggan(
-            fullName, phoneNumber, email, address, username, password
+            fullName, phoneNumberInt, email, address, username, password
         );
 
         if (newPelanggan != null) {
@@ -44,7 +46,7 @@ public class PelangganHandler {
 
         Pelanggan[] pelangganList = pelangganService.getAllPelanggan();
 
-        if (pelangganList.length == 0) {
+        if (pelangganList == null || pelangganList.length == 0 || pelangganList[0] == null) {
             System.out.println("❌ Tidak ada pelanggan yang terdaftar.");
         } else {
             for (Pelanggan pelanggan : pelangganList) {
