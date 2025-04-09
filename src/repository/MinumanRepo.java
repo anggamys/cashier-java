@@ -15,7 +15,7 @@ public class MinumanRepo {
 
     public Minuman addMinuman(Minuman newMinuman) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(ADD_MINUMAN)) {
+            PreparedStatement stmt = conn.prepareStatement(ADD_MINUMAN)) {
 
             stmt.setString(1, newMinuman.getId());
             stmt.setString(2, newMinuman.getName());
@@ -34,7 +34,7 @@ public class MinumanRepo {
 
     public Minuman getMinumanById(String id) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(GET_BY_ID)) {
+            PreparedStatement stmt = conn.prepareStatement(GET_BY_ID)) {
 
             stmt.setString(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -49,8 +49,8 @@ public class MinumanRepo {
 
     public Minuman[] getAllMinuman() {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(GET_ALL);
-             ResultSet rs = stmt.executeQuery()) {
+            PreparedStatement stmt = conn.prepareStatement(GET_ALL);
+            ResultSet rs = stmt.executeQuery()) {
 
             Minuman[] list = new Minuman[MAX_MINUMAN];
             int index = 0;
@@ -69,7 +69,7 @@ public class MinumanRepo {
 
     public Minuman updateMinuman(Minuman updatedMinuman) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(UPDATE_MINUMAN)) {
+            PreparedStatement stmt = conn.prepareStatement(UPDATE_MINUMAN)) {
 
             stmt.setString(1, updatedMinuman.getName());
             stmt.setString(2, updatedMinuman.getCategory());
@@ -88,7 +88,7 @@ public class MinumanRepo {
 
     public boolean deleteMinuman(String id) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(DELETE_MINUMAN)) {
+            PreparedStatement stmt = conn.prepareStatement(DELETE_MINUMAN)) {
 
             stmt.setString(1, id);
             int rowsDeleted = stmt.executeUpdate();
