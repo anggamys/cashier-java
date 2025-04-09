@@ -54,12 +54,14 @@ public class MenuHandler {
             System.out.println("=== MENU KASIR ===");
             System.out.println("1. Lihat Menu Makanan/Minuman");
             System.out.println("2. Proses Transaksi");
+            System.out.println("3. Lihat Daftar Transaksi");
             System.out.println("0. Logout");
 
             int pilihan = FormHandler.integerForm("Pilih menu: ");
             switch (pilihan) {
                 case 1 -> submenuLihatMenu();
                 case 2 -> transaksiHandler.addTransaction();
+                case 3 -> transaksiHandler.lihatRiwayatTransaksi();
                 case 0 -> {
                     authHandler.logout();
                     return;

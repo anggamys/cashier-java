@@ -53,13 +53,30 @@ public class MakananHandler {
         InterfaceUtil.clearScreen();
         System.out.println("=== UBAH MENU MAKANAN ===");
 
-        lihatMenuMakanan();
+        Makanan[] list = makananService.getAllMakanan();
 
+        if (list == null || list.length == 0 || list[0] == null) {
+            System.out.println("❌ Tidak ada menu makanan yang dapat diubah.");
+            InterfaceUtil.pressEnterToContinue();
+            return;
+        }
+
+
+        System.out.println("=== DAFTAR MENU MAKANAN ===");
+        if (list != null) {
+            for (Makanan m : list) {
+                if (m == null) continue;
+                printMakanan(m);
+            }
+        } 
+        
         String id = FormHandler.stringForm("\nMasukkan ID makanan yang ingin diubah: ");
         String namaBaru = FormHandler.stringForm("Masukkan nama makanan baru: ");
         int hargaBaru = FormHandler.integerForm("Masukkan harga makanan baru: ");
 
-        if (!FormHandler.confirmationForm("Apakah Anda yakin ingin mengubah menu ini? (y/n): ")) {
+        Boolean isConfirm = FormHandler.confirmationForm("Apakah Anda yakin ingin mengubah menu ini? (y/n): ");        
+
+        if (!isConfirm) {
             System.out.println("❌ Perubahan dibatalkan.");
             InterfaceUtil.pressEnterToContinue();
             return;
@@ -81,8 +98,21 @@ public class MakananHandler {
         InterfaceUtil.clearScreen();
         System.out.println("=== HAPUS MENU MAKANAN ===");
 
-        lihatMenuMakanan();
+        Makanan[] list = makananService.getAllMakanan();
+        if (list == null || list.length == 0 || list[0] == null) {
+            System.out.println("❌ Tidak ada menu makanan yang dapat dihapus.");
+            InterfaceUtil.pressEnterToContinue();
+            return;
+        }
 
+        System.out.println("=== DAFTAR MENU MAKANAN ===");
+        if (list != null) {
+            for (Makanan m : list) {
+                if (m == null) continue;
+                printMakanan(m);
+            }
+        }
+        
         String id = FormHandler.stringForm("\nMasukkan ID makanan yang ingin dihapus: ");
 
         if (!FormHandler.confirmationForm("Apakah Anda yakin ingin menghapus menu ini? (y/n): ")) {

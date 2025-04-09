@@ -59,7 +59,7 @@ public class FormHandler {
             }
 
             if (input.matches("^[0-9]{10,15}$")) {
-                return input;
+                
             } else {
                 System.out.println("\n❌ Format nomor telepon tidak valid. Masukkan 10–15 digit angka.\n");
             }

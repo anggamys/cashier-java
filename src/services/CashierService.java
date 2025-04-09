@@ -39,7 +39,6 @@ public class CashierService {
             if (cashier != null) {
                 return cashier;
             } else {
-                System.out.println("Cashier not found.");
                 return null;
             }
         } catch (Exception e) {
