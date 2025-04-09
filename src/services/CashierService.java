@@ -12,7 +12,7 @@ public class CashierService {
         this.cashierRepo = new CashierRepo();
     }
 
-    public Cashier addCashier(String fullName, int phoneNumber, String email, String address, String username, String password) {
+    public Cashier addCashier(String fullName, String phoneNumber, String email, String address, String username, String password) {
         String cashierID = FormatUtil.generateUniqueID();
         String hashedPassword = FormatUtil.hashedPassword(password);
 

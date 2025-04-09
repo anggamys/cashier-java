@@ -25,10 +25,8 @@ public class OwnerHandler {
         String username = FormHandler.stringForm("Username: ");
         String password = FormHandler.stringForm("Password: ");
 
-        int phoneNumberInt = FormatUtil.parseStrToInt(phoneNumber);
-
         Owner newOwner = ownerService.addOwner(
-            fullName, phoneNumberInt, email, address, username, password
+            fullName, phoneNumber, email, address, username, password
         );
 
         if (newOwner != null) {
@@ -83,10 +81,8 @@ public class OwnerHandler {
             return;
         }
 
-        int phoneNumberInt = FormatUtil.parseStrToInt(phoneNumber);
-
         Owner updatedOwner = ownerService.updateOwner(
-            new Owner(owner.getId(), fullName, email, phoneNumberInt, address, username, password)
+            new Owner(owner.getId(), fullName, email, phoneNumber, address, username, password)
         );
 
         if (updatedOwner != null) {

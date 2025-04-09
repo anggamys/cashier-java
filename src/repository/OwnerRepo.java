@@ -22,7 +22,7 @@ public class OwnerRepo {
             stmt.setString(1, newOwner.getId());
             stmt.setString(2, newOwner.getName());
             stmt.setString(3, newOwner.getEmail());
-            stmt.setInt(4, newOwner.getPhoneNumber());
+            stmt.setString(4, newOwner.getPhoneNumber());
             stmt.setString(5, newOwner.getAddress());
             stmt.setString(6, newOwner.getUsername());
             stmt.setString(7, newOwner.getPassword());
@@ -96,7 +96,7 @@ public class OwnerRepo {
     
             stmt.setString(1, updatedOwner.getName());
             stmt.setString(2, updatedOwner.getEmail());
-            stmt.setInt(3, updatedOwner.getPhoneNumber());
+            stmt.setString(3, updatedOwner.getPhoneNumber());
             stmt.setString(4, updatedOwner.getAddress());
             stmt.setString(5, updatedOwner.getUsername());
             stmt.setString(6, updatedOwner.getPassword());
@@ -131,7 +131,7 @@ public class OwnerRepo {
             rs.getString("id"),
             rs.getString("name"),
             rs.getString("email"),
-            rs.getInt("phone_number"),
+            rs.getString("phone_number"),
             rs.getString("address"),
             rs.getString("username"),
             rs.getString("password")

@@ -22,7 +22,7 @@ public class PelangganRepo {
             stmt.setString(1, newPelanggan.getId());
             stmt.setString(2, newPelanggan.getName());
             stmt.setString(3, newPelanggan.getEmail());
-            stmt.setInt(4, newPelanggan.getPhoneNumber());
+            stmt.setString(4, newPelanggan.getPhoneNumber());
             stmt.setString(5, newPelanggan.getAddress());
             stmt.setString(6, newPelanggan.getUsername());
             stmt.setString(7, newPelanggan.getPassword());
@@ -96,7 +96,7 @@ public class PelangganRepo {
     
             stmt.setString(1, updatedPelanggan.getName());
             stmt.setString(2, updatedPelanggan.getEmail());
-            stmt.setInt(3, updatedPelanggan.getPhoneNumber());
+            stmt.setString(3, updatedPelanggan.getPhoneNumber());
             stmt.setString(4, updatedPelanggan.getAddress());
             stmt.setString(5, updatedPelanggan.getUsername());
             stmt.setString(6, updatedPelanggan.getPassword());
@@ -131,7 +131,7 @@ public class PelangganRepo {
             rs.getString("id"),
             rs.getString("name"),
             rs.getString("email"),
-            rs.getInt("phone"),
+            rs.getString("phone"),
             rs.getString("address"),
             rs.getString("username"),
             rs.getString("password")

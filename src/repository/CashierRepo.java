@@ -21,7 +21,7 @@ public class CashierRepo {
             stmt.setString(1, cashier.getId());
             stmt.setString(2, cashier.getName());
             stmt.setString(3, cashier.getEmail());
-            stmt.setInt(4, cashier.getPhoneNumber());
+            stmt.setString(4, cashier.getPhoneNumber());
             stmt.setString(5, cashier.getAddress());
             stmt.setString(6, cashier.getUsername());
             stmt.setString(7, cashier.getPassword());
@@ -92,7 +92,7 @@ public class CashierRepo {
 
             stmt.setString(1, cashier.getName());
             stmt.setString(2, cashier.getEmail());
-            stmt.setInt(3, cashier.getPhoneNumber());
+            stmt.setString(3, cashier.getPhoneNumber());
             stmt.setString(4, cashier.getAddress());
             stmt.setString(5, cashier.getUsername());
             stmt.setString(6, cashier.getPassword());
@@ -125,7 +125,7 @@ public class CashierRepo {
         String id = rs.getString("id");
         String name = rs.getString("name");
         String email = rs.getString("email");
-        int phone = rs.getInt("phone");
+        String phone = rs.getString("phone");
         String address = rs.getString("address");
         String username = rs.getString("username");
         String password = rs.getString("password");

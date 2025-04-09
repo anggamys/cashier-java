@@ -12,7 +12,7 @@ public class OwnerService {
         this.ownerRepo = new OwnerRepo();
     }
 
-    public Owner addOwner(String fullName, int phoneNumber, String email, String address, String username, String password) {
+    public Owner addOwner(String fullName, String phoneNumber, String email, String address, String username, String password) {
         String ownerID = FormatUtil.generateUniqueID();
         String hashedPassword = FormatUtil.hashedPassword(password);
 

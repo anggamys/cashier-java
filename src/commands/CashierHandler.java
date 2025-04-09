@@ -19,7 +19,7 @@ public class CashierHandler {
         System.out.println("=== PENDAFTARAN KASIR ===");
 
         String fullName = FormHandler.stringForm("Nama Lengkap: ");
-        int phoneNumber = FormHandler.integerForm("Nomor HP: ");
+        String phoneNumber = FormHandler.phoneForm("Nomor HP: ");
         String email = FormHandler.emailForm("Email: ");
         String address = FormHandler.stringForm("Alamat: ");
         String username = FormHandler.stringForm("Username: ");
@@ -86,7 +86,7 @@ public class CashierHandler {
         }
 
         String fullName = FormHandler.stringForm("Nama Lengkap (" + cashier.getName() + "): ");
-        int phoneNumber = FormHandler.integerForm("Nomor HP (" + cashier.getPhoneNumber() + "): ");
+        String phoneNumber = FormHandler.phoneForm("Nomor HP (" + cashier.getPhoneNumber() + "): ");
         String email = FormHandler.emailForm("Email (" + cashier.getEmail() + "): ");
         String address = FormHandler.stringForm("Alamat (" + cashier.getAddress() + "): ");
         String username = FormHandler.stringForm("Username (" + cashier.getUsername() + "): ");
@@ -133,7 +133,7 @@ public class CashierHandler {
         }
 
         String fullName = FormHandler.stringForm("Nama Lengkap (" + cashier.getName() + "): ");
-        int phoneNumber = FormHandler.integerForm("Nomor HP (" + cashier.getPhoneNumber() + "): ");
+        String phoneNumber = FormHandler.phoneForm("Nomor HP (" + cashier.getPhoneNumber() + "): ");
         String email = FormHandler.emailForm("Email (" + cashier.getEmail() + "): ");
         String address = FormHandler.stringForm("Alamat (" + cashier.getAddress() + "): ");
         String username = FormHandler.stringForm("Username (" + cashier.getUsername() + "): ");

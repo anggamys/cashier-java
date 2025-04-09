@@ -25,10 +25,8 @@ public class PelangganHandler {
         String username = FormHandler.stringForm("Username: ");
         String password = FormHandler.stringForm("Password: ");
 
-        int phoneNumberInt = FormatUtil.parseStrToInt(phoneNumber);
-
         Pelanggan newPelanggan = pelangganService.addPelanggan(
-            fullName, phoneNumberInt, email, address, username, password
+            fullName, phoneNumber, email, address, username, password
         );
 
         if (newPelanggan != null) {
@@ -66,7 +64,7 @@ public class PelangganHandler {
         Pelanggan pelanggan = pelangganService.getPelangganById(currentPelanggan.getId());
 
         String fullName = FormHandler.stringForm("Nama Lengkap (" + pelanggan.getName() + "): ");
-        int phoneNumber = FormHandler.integerForm("Nomor HP (" + pelanggan.getPhoneNumber() + "): ");
+        String phoneNumber = FormHandler.phoneForm("Nomor HP (" + pelanggan.getPhoneNumber() + "): ");
         String email = FormHandler.emailForm("Email (" + pelanggan.getEmail() + "): ");
         String address = FormHandler.stringForm("Alamat (" + pelanggan.getAddress() + "): ");
         String username = FormHandler.stringForm("Username (" + pelanggan.getUsername() + "): ");

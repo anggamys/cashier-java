@@ -12,7 +12,7 @@ public class PelangganService {
         this.pelangganRepo = new PelangganRepo();
     }
 
-    public Pelanggan addPelanggan(String fullName, int phoneNumber, String email, String address, String username, String password) {
+    public Pelanggan addPelanggan(String fullName, String phoneNumber, String email, String address, String username, String password) {
         String pelangganID = FormatUtil.generateUniqueID();
         String hashedPassword = FormatUtil.hashedPassword(password);
 
